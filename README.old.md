@@ -1,2 +1,0 @@
-# mmsm-frontend
-Frontend repository
