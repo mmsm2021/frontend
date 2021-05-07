@@ -1,30 +1,40 @@
-import logo from './logo.svg';
 import './App.css';
 import React from "react";
-import "./Container.css";
-class Container extends React.Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      company: undefined
-    }
-  }
-  render() {
-    return(
-        <div className="c-main">
-          <h1>{this.props.company}</h1>
-        </div>
-    )
-  }
-}
-function App() {
-  return (
-    <div className="App">
+import {useAuth0} from "@auth0/auth0-react";
+import {Button} from "@material-ui/core";
 
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Container company="Café Crystal Methodic" />
-      </header>
+
+
+const LoginButton = () =>{
+    const { loginWithRedirect } = useAuth0();
+    if (useAuth0().isAuthenticated) {
+        return <Button variant="contained"
+                       color="primary"
+                       size="large"
+                       onClick={() => loginWithRedirect()}>Start working</Button>;
+    } else{
+        return <LogoutButton />;
+    }
+}
+const LogoutButton = () => {
+    const { logout } = useAuth0();
+
+    return (
+        <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            onClick={() => logout({ returnTo: window.location.origin })}>
+            Log Out
+        </Button>
+    );
+};
+
+function App() {
+
+    return (
+    <div className="Landing-page">
+        <LoginButton/>
 
     </div>
 

@@ -1,5 +1,36 @@
-.App {
+.Landing-page{
   text-align: center;
+  background-color: #383333;
+  position: sticky;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  background-image: url("https://docs.google.com/drawings/d/e/2PACX-1vRsR2Ei0W6TfPomTCwgO5F42knpkqF_YC1breswkkLLu2RtLz6ecYa77DHUeJ2weYzgX8qrHw1tApqg/pub?w=573&h=185");
+  background-position: top;
+  background-repeat: no-repeat;
+
+}
+.Landing-logo{
+  height: 40vmin;
+  pointer-events: none;
+}
+.FD-logo{
+  height: 120px;
+  width: 1080px;
+  padding-bottom: 8px;
+}
+.App {
+  display: grid;
+  grid-template-rows: 10% 80% 10%;
+  grid-template-areas:
+            "h h h"
+            "s m m"
+            "f f f";
+  grid-gap: 8px 10px;
 }
 
 .App-logo {
@@ -12,8 +43,18 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
-.App-header {
+.App-header{
+  padding: 6px;
+  grid-area: h;
+  min-height: 5vh;
+}
+.App-components{
+  list-style-type: none;
+  grid-area: s;
+  float: left;
+}
+.App-main {
+  text-align: center;
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -22,6 +63,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  grid-area: m;
 }
 
 .App-link {
