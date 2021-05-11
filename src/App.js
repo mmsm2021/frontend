@@ -26,14 +26,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Profile = () => {
-    const { user, isAuthenticated, isLoading } = useAuth0();
+    const { user, isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
     const classes = useStyles();
-    if (isLoading) {
+/*    if (isLoading) {
         return <div>Loading ...</div>;
-    }
+    }*/
     if (!isAuthenticated){
         return <LoginButton/>
     }
+    const accessToken = getIdTokenClaims("__raw");
+    console.log(accessToken);
+
     return (
 
         isAuthenticated && (
@@ -47,8 +50,7 @@ const Profile = () => {
 
                         </Typography>
                         <Avatar src={user.picture} alt={user.name} className={classes.large}/>
-
-                        <Button color="inherit"><LogoutButton/></Button>
+                        <LogoutButton/>
                     </Toolbar>
                 </AppBar>
             </div>
@@ -83,6 +85,7 @@ function App() {
     return (
     <div className="Landing-page">
         <Profile />
+
     </div>
 
   );
