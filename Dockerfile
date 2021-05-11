@@ -4,6 +4,6 @@ WORKDIR /app
 RUN npm install --production && npm run build
 FROM node:14-alpine
 COPY --from=builder /app/build /app/build
-WORKDIR /app/build
+WORKDIR /app
 RUN npm install -g serve
-CMD ["serve", "-s"]
+CMD ["serve", "-s", "build"]
