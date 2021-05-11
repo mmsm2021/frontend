@@ -1,17 +1,15 @@
 import {useAuth0} from "@auth0/auth0-react";
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Navbar, Nav, NavDropdown, Form, FormControl} from "react-bootstrap";
+import {Button, Navbar, Nav, NavDropdown, Container} from "react-bootstrap";
 import Logo from "./fd_logo.svg";
 
 const Profile = () => {
-    const { user, isAuthenticated, isLoading, getIdTokenClaims } = useAuth0();
+    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
     if (!isAuthenticated){
         return <LoginButton/>
     }
-    const accessToken = getIdTokenClaims();
-    console.log(accessToken);
 
     return (
         isAuthenticated && (
@@ -49,9 +47,11 @@ const LogoutButton = () => {
 };
 
 class Navigation extends React.Component{
+
     render() {
         return(
             <Navbar collapseOnSelect bg="dark" variant="dark" expand="lg" sticky="top">
+                <Container>
                 <Navbar.Brand href="#home">
                     <img src={Logo}
                             width="126"
@@ -67,6 +67,7 @@ class Navigation extends React.Component{
                     </Nav>
                     <Profile />
                 </Navbar.Collapse>
+                </Container>
             </Navbar>
         )
     }
