@@ -9,6 +9,7 @@ ReactDOM.render(
         domain="mmsm.eu.auth0.com"
         clientId="BxBvrTebzNYd8aQTzIjaKiI7VmYtNQp3"
         redirectUri={window.location.origin}
+        organization="org_38UUgEiPSzeT9JI1"
         >
 
     <App />
