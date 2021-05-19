@@ -1,10 +1,9 @@
 import {useAuth0} from "@auth0/auth0-react";
 import React from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button, Navbar, Nav, NavDropdown, Container, Image} from "react-bootstrap";
+import {Button, Navbar, Nav, NavDropdown, Container, Image, NavItem} from "react-bootstrap";
 import Logo from "./fd_logo.svg";
 import ComponentList from "./ComponentList";
-
+import {BrowserRouter as Router, Link, NavLink} from "react-router-dom";
 
 
 function UserAvatar(props){
@@ -17,12 +16,12 @@ function UserAvatar(props){
 
 
 const Profile = () => {
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated, getIdTokenClaims } = useAuth0();
 
     if (!isAuthenticated){
         return <LoginButton/>
     }
-
+    console.log(getIdTokenClaims());
     return (
         isAuthenticated && (
             <Nav>
@@ -35,6 +34,9 @@ const Profile = () => {
                 </NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.2">Historik</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.3">Indstillinger</NavDropdown.Item>
+                <NavDropdown.Item>
+                    <NavLink to="/test">Test</NavLink>
+                </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="#action/3.4" >
                     <LogoutButton/>
@@ -67,6 +69,7 @@ class Navigation extends React.Component{
 
     render() {
         return(
+
             <Navbar collapseOnSelect bg="dark" variant="dark" expand="lg" sticky="top">
                 <Container>
                 <Navbar.Brand href="#home">
@@ -79,14 +82,20 @@ class Navigation extends React.Component{
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="#home">Home</Nav.Link>
-                        <Nav.Link href="#link">Link</Nav.Link>
-                        <ComponentList />
+                        <Nav.Item>
+
+                            <NavLink to="/">Home</NavLink>
+                        </Nav.Item>
+                        <Nav.Item>
+                                <NavLink to="/orders">Ordre</NavLink>
+                        </Nav.Item>
+
                     </Nav>
                     <Profile />
                 </Navbar.Collapse>
                 </Container>
             </Navbar>
+
         )
     }
 }
