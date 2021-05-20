@@ -1,25 +1,27 @@
-.Landing-page{
+.Landing-page {
 
-  text-align: center;
+    text-align: center;
 
-  position: sticky;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    position: sticky;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 
 }
-.App-background{
 
-  background-color: #383333;
-  background-image: url("https://docs.google.com/drawings/d/e/2PACX-1vRsR2Ei0W6TfPomTCwgO5F42knpkqF_YC1breswkkLLu2RtLz6ecYa77DHUeJ2weYzgX8qrHw1tApqg/pub?w=573&h=185");
-  background-position: center;
-  background-repeat: no-repeat;
+.App-background {
+
+    background-color: #383333;
+    background-image: url("https://docs.google.com/drawings/d/e/2PACX-1vRsR2Ei0W6TfPomTCwgO5F42knpkqF_YC1breswkkLLu2RtLz6ecYa77DHUeJ2weYzgX8qrHw1tApqg/pub?w=573&h=185");
+    background-position: center;
+    background-repeat: no-repeat;
 }
-.App-components{
-  border-right: 1px solid black;
+
+.App-components {
+    border-right: 1px solid black;
 }
 
