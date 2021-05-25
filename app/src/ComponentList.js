@@ -18,7 +18,7 @@ class ComponentList extends React.Component {
                 <NavDropdown.Item href={"#action/" + i}>Handling #{i}</NavDropdown.Item>
             );
         }
-        ;
+
         return dummys;
     }
 

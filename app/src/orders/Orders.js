@@ -1,12 +1,68 @@
 import React from "react";
-import {Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SidebarHeader, SubMenu} from 'react-pro-sidebar';
+import {MenuItem, SubMenu} from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
-import {Link, Route, Switch, useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import './orders.css'
-import {FaCheckSquare, FaReceipt} from "react-icons/all";
+import {FaReceipt} from "react-icons/all";
 import {Badge, Button, Col, Form, InputGroup} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import {OrderTable} from "./OrderService";
+
+export const OrderRoutes =
+    [
+        {
+            path: "/orders",
+            exact: true,
+            sidebar: <FormattedMessage id={"orderPlural"}/>,
+            main: () => <h2>Overview</h2>,
+        },
+        {
+            path: "/orders/active",
+            sidebar: <FormattedMessage id={"active"}/>,
+            main: () => <Active/>,
+        },
+        {
+            path: "/orders/queue",
+            sidebar: <FormattedMessage id={"queue"}/>,
+            main: (orders) => <Queue orders={orders}/>
+        },
+        {
+            path: "/orders/finished",
+            sidebar: <FormattedMessage id={"finished"}/>,
+            main: () => <Finished/>
+        },
+        {
+            path: "test",
+            sidebar: <FormattedMessage id={"detail"}/>,
+            main: () => <h2>Test</h2>
+        },
+        {
+            path: "/orders/:id",
+            main: (order) => <Details order={order}/>
+        }];
+
+
+//     for (let index in data.orders) {
+//         let obj = data.orders[index];
+//         let key = null;
+//         for (let ind in obj) {
+//             if (key == null) key = ind;
+//             obj = obj[ind];
+//             cdm_orders.push(obj);
+//         }
+//     }
+//     console.log(cdm_orders);
+//     this.setState({orders: cdm_orders,
+//         isLoading: false});
+// },
+// (error) => {
+//     console.log(error.message);
+//     this.setState({
+//         isLoading: true,
+//         error
+//     });
+// });
+
 
 class Orders extends React.Component {
     constructor(props) {
@@ -15,137 +71,67 @@ class Orders extends React.Component {
             error: null,
             isLoading: false,
             orders: [],
-            routes: [
-                {
-                    path: "/orders",
-                    exact: true,
-                    sidebar: () => <p><FormattedMessage id="orders.plural"/></p>,
-                    main: () => <h2>Overview</h2>,
-                }, {
-                    path: "/orders/active",
-                    sidebar: () => <p>Igangværende</p>,
-                    main: (orders) => <Active orders={this.state.orders}/>
-                },
-                {
-                    path: "/orders/queue",
-                    sidebar: () => <p>Modtaget</p>,
-                    main: () => <Queue orders={this.state.orders}/>
-                },
-                {
-                    path: "/orders/finished",
-                    sidebar: () => <p>Afsluttede</p>,
-                    main: () => <h2>Afsluttede ordre</h2>
-                },
-                {
-                    path: "/orders/:id",
-                    main: (order) => <Details order={order}/>
-                }]
         }
     }
 
     componentDidMount() {
         console.log('Component mount');
         this.setState({isLoading: true});
-        const cdm_orders = [];
-        fetch('https://frandine.randomphp.com/api/orders/23/last/3')
-            .then(response => response.json())
-            .then(data => {
-                    for (let index in data.orders) {
-                        let obj = data.orders[index];
-                        let key = null;
-                        for (let ind in obj) {
-                            if (key == null) key = ind;
-                            obj = obj[ind];
-                            cdm_orders.push(obj);
-                        }
-                    }
 
-                    this.setState({orders: cdm_orders});
-                },
-                (error) => {
-                    this.setState({
-                        isLoading: true,
-                        error
-                    });
-                });
 
     }
 
     render() {
-        const OrderRoutes = this.state.routes;
-        return (
-            <div style={{display: "flex"}}>
-                <ProSidebar>
-                    <SidebarHeader className="bg">
-                        {/**
-                         *  You can add a header for the sidebar ex: logo
-                         */}
-                        <div className="sh">
-                            Komponenter
-                        </div>
-                    </SidebarHeader>
-                    <SidebarContent className="bg">
-                        {/**
-                         *  You can add the content of the sidebar ex: menu, profile details, ...
-                         */}
-                        <Menu iconShape={"round"}>
-                            <SubMenu title={<FormattedMessage id="orderPlural"/>}
-                                     icon={<FaReceipt/>}>
-                                <MenuItem suffix={<Badge variant="light" pill>5</Badge>}>
-                                    <Link to="/orders/active">
-                                        Igangværende
-                                    </Link>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Link to="/orders/queue">Modtaget</Link>
-                                </MenuItem>
-                                <MenuItem icon={<FaCheckSquare/>}>
-                                    <Link to="/orders/finished">Afsluttede</Link>
-                                </MenuItem>
-                            </SubMenu>
-                        </Menu>
-                    </SidebarContent>
-                    <SidebarFooter style={{textAlign: 'center'}}>
+        delete OrderRoutes[0];
+        delete OrderRoutes.last;
+        const isLoading = this.state.isLoading;
 
-                    </SidebarFooter>
-                </ProSidebar>
-                <div style={{flex: 1, padding: "10px"}}>
-                    <Switch>
-                        {OrderRoutes.map((route, index) => (
-                            // Render more <Route>s with the same paths as
-                            // above, but different components this time.
-                            <Route
-                                key={index}
-                                path={route.path}
-                                exact={route.exact}
-                                children={<route.main/>}
-                            />
-                        ))}
-                    </Switch>
-                </div>
-            </div>
+        return (
+
+            <SubMenu title={<FormattedMessage id={"orderPlural"}/>}
+                     icon={<FaReceipt/>}>
+                {OrderRoutes.map((route, index) => (
+
+                    <MenuItem key={index} suffix={<Badge variant="light" pill>{OrderRoutes.length}</Badge>}>
+                        <Link to={route.path}>{route.sidebar}</Link>
+                    </MenuItem>
+                ))}
+
+            </SubMenu>
         )
     }
 }
 
 export default Orders;
 
-function Active(props) {
+const Active = () => {
+    console.log("Getting active orders");
 
     return (
+
         <div>
             <h2>Active</h2>
-            <OrderTable orders={props.orders}/>
+            <OrderTable which="active"/>
         </div>
     );
 }
 
-function Queue(props) {
+function Queue() {
 
     return (
+
         <div>
             <h2>Order Queue</h2>
-            <OrderTable orders={props.orders}/>
+            <OrderTable which="queue"/>
+        </div>
+    )
+}
+
+const Finished = () => {
+    return (
+        <div>
+            <h2>Finished</h2>
+            <OrderTable which="finished"/>
         </div>
     )
 }

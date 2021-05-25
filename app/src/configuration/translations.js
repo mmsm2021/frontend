@@ -7,6 +7,9 @@ export default {
         orderId: 'Order ID',
         orderItems: 'Items',
         orderPrice: 'Price',
+        active: 'Active',
+        queue: 'Queue',
+        finished: 'Finished',
         detail: 'Details',
         account: 'Account',
         profile: 'Profile',
@@ -15,7 +18,9 @@ export default {
         create: 'Create',
         save: 'Save',
         remove: 'Remove',
-        delete: 'Delete'
+        delete: 'Delete',
+        newOrder: 'New Order',
+
 
     },
     da: {
@@ -26,6 +31,9 @@ export default {
         orderId: 'Ordre ID',
         orderItems: 'Bestillinger',
         orderPrice: 'Pris',
+        active: 'Aktive',
+        queue: 'Kø',
+        finished: 'Afsluttet',
         detail: 'Detaljer',
         account: 'Konto',
         profile: 'Profil',
@@ -34,7 +42,8 @@ export default {
         create: 'Opret',
         save: 'Gem',
         remove: 'Fjern',
-        delete: 'Slet'
+        delete: 'Slet',
+        newOrder: 'Ny bestilling'
     }
 }
 

@@ -8,6 +8,11 @@ body {
 
 }
 
+.org_brand {
+    color: #d70000;
+    background-color: #8199eb;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

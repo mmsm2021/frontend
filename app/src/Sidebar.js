@@ -1,41 +1,43 @@
 import {useAuth0} from "@auth0/auth0-react";
-import {Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SidebarHeader, SubMenu} from "react-pro-sidebar";
+import {Menu, ProSidebar, SidebarContent, SidebarFooter, SidebarHeader} from "react-pro-sidebar";
 import React from "react";
-import {Link} from "react-router-dom";
+import Orders from "./orders/Orders";
+import {Profile} from "./profile/Profile";
+import fd_logo from "./fd_logo.svg"
+import bg1 from "./bg1.jpg";
+import {Products} from "./products/Products";
+import {AuthAction} from "./Navigation";
 
 export const Sidebar = () => {
-    const {user, isAuthenticated} = useAuth0();
+    const {user, isAuthenticated, getAccessTokenSilently, getIdTokenClaims} = useAuth0();
+
+
     return (
         isAuthenticated && (
-            <div className={"position-sticky"}>
-                <ProSidebar>
+            <ProSidebar breakPoint={"md"}
+                        image={bg1}
+            >
+                <SidebarHeader>
 
-                    <SidebarHeader className="bg justify-content-md-center">
-                        <div className="sh">
-                            {user.name}
-                        </div>
-                    </SidebarHeader>
-                    <SidebarContent>
-                        <Menu iconShape={"circle"}>
-                            <SubMenu title={"Profil"}>
-                                <MenuItem>
-                                    <Link to="/profile">Oplysninger</Link>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Link to="/profile/history">Historik</Link>
-                                </MenuItem>
-                                <MenuItem>
-                                    <Link to="/profile/settings">Indstillinger</Link>
-                                </MenuItem>
-                            </SubMenu>
-                        </Menu>
-                    </SidebarContent>
-                    <SidebarFooter>
-                        {user.email}
-                    </SidebarFooter>
-                </ProSidebar>
+                    <img src={fd_logo}
+                         alt={"company logo"}/>
 
-            </div>
+                </SidebarHeader>
+                <SidebarContent>
+                    <Menu iconShape={"circle"}>
+                        <Orders/>
+                    </Menu>
+                    <Menu iconShape={"circle"}>
+                        <Products/>
+                    </Menu>
+                    <Menu iconShape={"circle"}>
+                        <Profile/>
+                    </Menu>
+                </SidebarContent>
+                <SidebarFooter>
+                    <AuthAction/>
+                </SidebarFooter>
+            </ProSidebar>
         )
     )
 }

@@ -1,36 +1,29 @@
 import React from "react";
-
-import {Container, Row} from "react-bootstrap";
 import {useAuth0} from "@auth0/auth0-react";
 import {Route, Switch} from "react-router-dom";
-import Orders from "./orders/Orders";
-import {Test} from "./Test";
-import {FormattedMessage} from "react-intl";
-import {Profile} from "./profile/Profile";
+import {OrderRoutes} from "./orders/Orders";
+import {ProfileRoutes} from "./profile/Profile";
+import {ProductRoutes} from "./products/Products";
+import {FaBars} from "react-icons/all";
 
 function App() {
-    const {user, isAuthenticated, getIdTokenClaims} = useAuth0();
+    let routes = [];
+    routes = routes.concat(OrderRoutes, ProfileRoutes, ProductRoutes);
+    const {isAuthenticated} = useAuth0();
     return (
-        <Container fluid>
-            <Row>
-                <Switch>
-                    <Route path="/orders">
-                        <Orders/>
-                    </Route>
-                    <Route path="/test">
-                        <Test/>
-                    </Route>
-                    <Route path="/profile">
-                        <Profile/>
-                    </Route>
-                    <Route exact path="/">
-                        <h2><FormattedMessage id="welcome"/></h2>
-                    </Route>
-
-                </Switch>
-
-            </Row>
-        </Container>
+        isAuthenticated &&
+        <>
+            <div className="btn-toggle">
+                <FaBars/>
+            </div>
+            <Switch>
+                {routes.map((route) => (
+                    <Route path={route.path}
+                           exact={route.exact}
+                           children={<route.main/>}/>
+                ))}
+            </Switch>
+        </>
 
     );
 }

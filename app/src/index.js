@@ -9,22 +9,28 @@ import reportWebVitals from './reportWebVitals';
 import {Auth0Provider} from "@auth0/auth0-react";
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import Navigation from "./Navigation";
-import About from "./About";
 import {IntlProvider} from 'react-intl';
 import translations from "./configuration/translations";
+import {Sidebar} from "./Sidebar";
 
 ReactDOM.render(
     <Auth0Provider
         domain="mmsm.eu.auth0.com"
         clientId="BxBvrTebzNYd8aQTzIjaKiI7VmYtNQp3"
         redirectUri={window.location.origin}
-        // organization="org_38UUgEiPSzeT9JI1"
+        audience="https://mmsm.eu.auth0.com/api/v2/"
+        scope="read:current_user update:current_user_metadata read:branding read:organizations"
+        organization="org_Wapaaiqxzjl75Uvd"
     >
+
         <Router>
             <IntlProvider locale={'en'} messages={translations['en']}>
                 <Navigation/>
-                <Route path="/" component={App}/>
-                <Route path="/about" component={About}/>
+                <div className={`d-inline-flex`}>
+                    <Sidebar/>
+                    <Route path="/" component={App}/>
+                </div>
+
             </IntlProvider>
         </Router>
     </Auth0Provider>,
