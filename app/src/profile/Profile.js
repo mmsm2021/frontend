@@ -125,9 +125,6 @@ function Settings() {
                                         {langMenu.map((lang) => {
                                             return <Dropdown.Item value={lang}>{translations[lang]['langName']}</Dropdown.Item>
                                         })}
-                                        {/*{languages.map((lang) => {*/}
-                                        {/*    return <Dropdown.Item value={lang.value}>{lang.name}</Dropdown.Item>*/}
-                                        {/*})}*/}
                                     </DropdownType>
                                 ))}
                                 <Form.Text className="text-muted">
