@@ -1,5 +1,6 @@
 export default {
     en: {
+        langName: 'English, Great Britain',
         welcome: 'Welcome',
         dashboard: 'Dashboard',
         orderPlural: 'Orders',
@@ -13,6 +14,8 @@ export default {
         detail: 'Details',
         account: 'Account',
         profile: 'Profile',
+        products: 'Products',
+        productNew: 'New product',
         settings: 'Settings',
         history: 'History',
         create: 'Create',
@@ -20,10 +23,17 @@ export default {
         remove: 'Remove',
         delete: 'Delete',
         newOrder: 'New Order',
-
-
+        language: 'Language',
+        colorTheme: 'Colour Theme',
+        desiredLanguage: 'Desired Language',
+        desiredTheme: 'Desired Colour-theme',
+        currency: 'Currency',
+        desiredCurrency: 'Desired currency',
+        location: 'Location',
+        assignedLocation: 'Assigned location',
     },
     da: {
+        langName: 'Dansk, Danmark',
         welcome: 'Velkommen',
         dashboard: 'Dashboard',
         orderPlural: 'Ordre',
@@ -37,13 +47,23 @@ export default {
         detail: 'Detaljer',
         account: 'Konto',
         profile: 'Profil',
+        products: 'Produkter',
+        productNew: 'Nyt produkt',
         settings: 'Indstillinger',
         history: 'Historik',
         create: 'Opret',
         save: 'Gem',
         remove: 'Fjern',
         delete: 'Slet',
-        newOrder: 'Ny bestilling'
+        newOrder: 'Ny bestilling',
+        language: 'Sprog',
+        colorTheme: 'Farver',
+        desiredLanguage: 'Anvendt sprog',
+        desiredTheme: 'Anvendt farve-skema',
+        currency: 'Møntfod',
+        desiredCurrency: 'Anvendt møntfod',
+        location: 'Lokation',
+        assignedLocation: 'Associeret lokation',
     }
 }
 
