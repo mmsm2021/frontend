@@ -31,13 +31,52 @@ export const ProfileRoutes = [
 
 const Meta = () => {
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-    const [userMetadata, setUserMetadata] = useState(null);
+    const [userMetadata, setUserMetadata] = useState(user);
+    let frandineMetaKeys = Object.keys(userMetadata['https://frandine.randomphp.com/user_metadata']);
+    let genMetaKeys = Object.keys(userMetadata);
     return (
         isAuthenticated && (
             <div>
-                <h3>User Metadata</h3>
                 {userMetadata ? (
-                    <pre>{JSON.stringify(userMetadata, null, 2)}</pre>
+                    <div>
+                        <div className="row align-items-center profile-header">
+                            <div className="col-md-2 mb-3">
+                                <img
+                                    src={userMetadata['picture']}
+                                    alt="Profile"
+                                    className="rounded-circle img-fluid profile-picture mb-3 mb-md-0"
+                                />
+                            </div>
+                            <div className="col-md text-center text-md-left">
+                                <h2>{userMetadata['name']}</h2>
+                                <p className="lead text-muted">{userMetadata['email']}</p>
+                            </div>
+                        </div>
+                        <div className="col-md text-center text-md-left card-header">
+                            FranDine user type:
+                        </div>
+                        {user['https://frandine.randomphp.com/roles'].map(role => {
+                            return <div className="text-md-center">{role}</div>
+                        })}
+                        <div className="col-md text-center text-md-left card-header">
+                            FranDine user meta data:
+                        </div>
+                        {frandineMetaKeys.map((key) => {
+                            return <div
+                                className="text-md-center">{key} : {user['https://frandine.randomphp.com/user_metadata'][key]}</div>
+                        })}
+                        <div className="col-md text-center text-md-left card-header">
+                            General meta data:
+                        </div>
+                        {genMetaKeys.map((key) => {
+                            if(!key.includes('https') && !key.includes('picture')) {
+                                return <div className="text-md-center">
+                                    {key} : {userMetadata[key]}
+                                </div>
+                            }
+                            return null
+                        })}
+                    </div>
                 ) : (
                     "No user metadata defined"
                 )}
@@ -45,6 +84,7 @@ const Meta = () => {
         )
     );
 }
+
 
 export class Profile extends React.Component {
     constructor(props) {
@@ -86,14 +126,8 @@ function Overview(props) {
 }
 
 function Settings() {
-    let userToken = localStorage.getItem("bearer").split('.');
-    let buff = new Buffer(userToken[1], 'base64');
-
-    let tokenPayload = JSON.parse(buff.toString('ascii'));
-    let profileSettings = tokenPayload[['https://frandine.randomphp.com/user_metadata']];
-
-    // let languages = [{name: 'Dansk', value: 'da-DK'}, {name:'English', value: 'en_GB'}, {name: 'Deutsch', value: 'de-DE'}];
-
+    const { user } = useAuth0();
+    let profileSettings = user['https://frandine.randomphp.com/user_metadata'];
     let langMenu = Object.keys(translations);
     let themeMenu = Object.keys(themes);
     let locMenu = Object.keys(locations);
@@ -169,7 +203,6 @@ function Settings() {
                                         title={<FormattedMessage id={"location"} />}
                                     >
                                         {locMenu.map((loc) => {
-                                            console.log(loc);
                                             return <Dropdown.Item value={loc}>{locations[loc]}</Dropdown.Item>
                                         })}
                                     </DropdownType>
