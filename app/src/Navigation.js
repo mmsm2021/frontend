@@ -49,6 +49,7 @@ class Navigation extends React.Component {
 
     render() {
         return (
+            <>
             <Navbar collapseOnSelect bg="dark" variant="dark" expand="lg" sticky="top">
                 <Container>
                     <Navbar.Brand href="#home">
@@ -66,13 +67,7 @@ class Navigation extends React.Component {
                                 <NavLink to="/">Home</NavLink>
                             </Nav.Item>
                             <Nav.Item className={"nav-link"}>
-                                <NavLink to="/orders">Ordre</NavLink>
-                            </Nav.Item>
-                            <Nav.Item className={"nav-link"}>
-                                <NavLink to="/about">Sorted</NavLink>
-                            </Nav.Item>
-                            <Nav.Item className={"nav-link"}>
-                                <NavLink to="/profile">Profil</NavLink>
+                                <NavLink to="/test">Test</NavLink>
                             </Nav.Item>
                         </Nav>
                         <AuthAction/>
@@ -80,6 +75,7 @@ class Navigation extends React.Component {
                 </Container>
             </Navbar>
 
+            </>
         )
     }
 }

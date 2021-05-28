@@ -1,29 +1,31 @@
-import React from "react";
+import React, {useState} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 import {Route, Switch} from "react-router-dom";
 import {OrderRoutes} from "./orders/Orders";
 import {ProfileRoutes} from "./profile/Profile";
 import {ProductRoutes} from "./products/Products";
+import {Sidebar} from "./Sidebar";
 import {FaBars} from "react-icons/all";
+import {Main} from "./Main";
 
 function App() {
-    let routes = [];
-    routes = routes.concat(OrderRoutes, ProfileRoutes, ProductRoutes);
+    const [toggled, setToggled] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
+    const handleToggleSidebar = (value) => {
+        setToggled(value);
+    };
+
     const {isAuthenticated} = useAuth0();
     return (
-        isAuthenticated &&
-        <>
-            <div className="btn-toggle">
-                <FaBars/>
-            </div>
-            <Switch>
-                {routes.map((route) => (
-                    <Route path={route.path}
-                           exact={route.exact}
-                           children={<route.main/>}/>
-                ))}
-            </Switch>
-        </>
+
+        <div className={`shadow-lg app ${toggled ? 'toggled' : ''} `} >
+
+                <Sidebar handleToggleSidebar={handleToggleSidebar}
+                        toggled={toggled}/>
+                <Main handleToggleSidebar={handleToggleSidebar}
+                        toggled ={toggled} />
+
+        </div>
 
     );
 }

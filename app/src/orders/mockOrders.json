@@ -1,68 +1,112 @@
 {
   "orders": [
-    [
-      {
-        "orderId": "60a37529b2131e38b375a615",
-        "location": "FranDine Bellinge",
-        "locationId": 23,
-        "server": "Palle Bertelsen",
-        "customer": "anotherdude@theinternet.com",
-        "items": [
-          {
-            "itemUUID": "60a37529b2131e38b375a616",
-            "nr": 85,
-            "name": "Cheese Burger, XL",
-            "cost": 55,
-            "delivered": null
-          },
-          {
-            "itemUUID": "60a37529b2131e38b375a617",
-            "nr": 15,
-            "name": "Coca Cola 0,5L",
-            "cost": 10,
-            "delivered": null
-          }
-        ],
-        "discount": 20,
-        "total": 52,
-        "orderDate": {
-          "date": "2021-05-18 08:04:57.484000",
-          "timezone_type": 3,
-          "timezone": "UTC"
+    {
+      "orderId": "60a771765049320d4745e092",
+      "location": "FranDine Bellinge",
+      "locationId": "23",
+      "server": "Bernadette Harroldson",
+      "customer": "google-oauth2|108643401058990008951",
+      "items": [
+        {
+          "itemUUID": "60a771765049320d4745e093",
+          "nr": 45,
+          "name": "Tåååst",
+          "cost": "35",
+          "delivered": null
+        },
+        {
+          "itemUUID": "60a771765049320d4745e094",
+          "nr": 65,
+          "name": "Faxe Kondi, 0,5L",
+          "cost": "15",
+          "delivered": null
         }
-      }
-    ],
-    [
-      {
-        "orderId": "60a375f525c79e260f33f1b6",
-        "location": "FranDine Bellinge",
-        "locationId": 23,
-        "server": "Palle Bertelsen",
-        "customer": "beatrice@aol.com",
-        "items": [
-          {
-            "itemUUID": "60a375f525c79e260f33f1b7",
-            "nr": 85,
-            "name": "Weggie Burger, Spelt deluxe",
-            "cost": 45,
-            "delivered": null
-          },
-          {
-            "itemUUID": "60a375f525c79e260f33f1b8",
-            "nr": 15,
-            "name": "Havre saft, Ekstrakt, Extra bio",
-            "cost": 55,
-            "delivered": null
-          }
-        ],
-        "discount": 20,
-        "total": 80,
-        "orderDate": {
-          "date": "2021-05-18 08:08:21.884000",
-          "timezone_type": 3,
-          "timezone": "UTC"
+      ],
+      "orderStatus": 1,
+      "discount": 20,
+      "total": "40",
+      "orderDate": "2021-05-21T08:38:14+0000"
+    },
+    {
+      "orderId": "60a7720062df323ced2668d2",
+      "location": "FranDine Bellinge",
+      "locationId": "23",
+      "server": "Yvonne Harder",
+      "customer": "google-oauth2|108643401058990008951",
+      "items": [
+        {
+          "itemUUID": "60a7720062df323ced2668d3",
+          "nr": 35,
+          "name": "Cheesburger",
+          "cost": "35",
+          "delivered": null
+        },
+        {
+          "itemUUID": "60a7720062df323ced2668d4",
+          "nr": 75,
+          "name": "Coca Cola, 0,5L",
+          "cost": "15",
+          "delivered": null
         }
-      }
-    ]
+      ],
+      "orderStatus": 1,
+      "discount": 20,
+      "total": "40",
+      "orderDate": "2021-05-21T08:40:32+0000"
+    },
+    {
+      "orderId": "60a7725d5049320d4745e095",
+      "location": "FranDine Bellinge",
+      "locationId": "23",
+      "server": "Jens Sweggerby",
+      "customer": "google-oauth2|108643401058990008951",
+      "items": [
+        {
+          "itemUUID": "60a7725d5049320d4745e096",
+          "nr": 125,
+          "name": "Pizza DeLuxe, Top Dollar",
+          "cost": "35",
+          "delivered": null
+        },
+        {
+          "itemUUID": "60a7725d5049320d4745e097",
+          "nr": 15,
+          "name": "Cocio, 0,5L",
+          "cost": "15",
+          "delivered": null
+        }
+      ],
+      "orderStatus": 1,
+      "discount": 20,
+      "total": "40",
+      "orderDate": "2021-05-21T08:42:05+0000"
+    },
+    {
+      "orderId": "60ae18cf3c78412a1f0d68c2",
+      "location": "FranDine Bellinge",
+      "locationId": "23",
+      "server": null,
+      "customer": "auth0|60adeeeae9c04b0070ae07e3",
+      "items": [
+        {
+          "itemUUID": "60ae18cf3c78412a1f0d68c3",
+          "nr": 45,
+          "name": "Forloren Pildsakde",
+          "cost": "25",
+          "delivered": null
+        },
+        {
+          "itemUUID": "60ae18cf3c78412a1f0d68c4",
+          "nr": 65,
+          "name": "Billig rødvin, 0,5L",
+          "cost": "25",
+          "delivered": null
+        }
+      ],
+      "orderStatus": 1,
+      "discount": 20,
+      "total": "40",
+      "orderDate": "2021-05-26T09:45:51+0000"
+    }
   ]
 }
