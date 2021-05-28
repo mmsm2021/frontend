@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {MenuItem, SubMenu} from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import {Link, useParams} from "react-router-dom";
@@ -6,7 +6,8 @@ import './orders.css'
 import {FaReceipt} from "react-icons/all";
 import {Badge, Button, Col, Form, InputGroup} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
-import {OrderTable} from "./OrderService";
+import {api, OrderDetails, OrderTable} from "./OrderService";
+import axios from "axios";
 
 export const OrderRoutes =
     [
@@ -32,13 +33,13 @@ export const OrderRoutes =
             main: () => <Finished/>
         },
         {
-            path: "test",
-            sidebar: <FormattedMessage id={"detail"}/>,
-            main: () => <h2>Test</h2>
+            path: "/orders/new",
+            sidebar: <FormattedMessage id={"newOrder"}/>,
+            main: () => <Create/>
         },
         {
             path: "/orders/:id",
-            main: (order) => <Details order={order}/>
+            main: () => <Details />
         }];
 
 
@@ -104,14 +105,15 @@ class Orders extends React.Component {
 
 export default Orders;
 
+
 const Active = () => {
-    console.log("Getting active orders");
 
     return (
 
         <div>
             <h2>Active</h2>
-            <OrderTable which="active"/>
+
+            <OrderTable which="active" useMockdata={true} />
         </div>
     );
 }
@@ -131,13 +133,18 @@ const Finished = () => {
     return (
         <div>
             <h2>Finished</h2>
+
             <OrderTable which="finished"/>
         </div>
     )
 }
 
-function Create() {
+const Create = () =>{
     let order;
+    let items=[];
+    const addItem = event =>{
+
+    }
     return (
         <div>
             <h2>New order</h2>
@@ -158,16 +165,8 @@ function Create() {
 
                 <Form.Group controlId="formGridItems">
                     <Form.Label>Items</Form.Label>
-                    {order.items.map((item) => (
-                        <InputGroup className={"mb-3"}>
-                            <Form.Control placeholder={item.name}/>
-                            <InputGroup.Append>
-                                <InputGroup.Text>DKK</InputGroup.Text>
-                                <InputGroup.Text>{item.cost}</InputGroup.Text>
-                            </InputGroup.Append>
-                        </InputGroup>
-                    ))}
-                    <Form.Text>Total: {order.total}</Form.Text>
+
+                    <Form.Text>Total: </Form.Text>
                 </Form.Group>
                 <Button variant="primary" type="submit">
                     <FormattedMessage id={"save"}/>
@@ -177,56 +176,14 @@ function Create() {
     )
 }
 
-function Details(props) {
+function Details() {
+
     let {id} = useParams();
-    const order = props.order;
+
+
     if (!id) return null;
     return (
-        order &&
-        <div>
-            <h2><FormattedMessage id={"detail"}/></h2>
-            <Form>
-                <Form.Row>
-                    <Form.Group as={Col} controlId="formGridId">
-                        <Form.Label><FormattedMessage id="orderId"/></Form.Label>
-                        <Form.Control type="text" placeholder={order.orderId} readOnly/>
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="formGridDate">
-                        <Form.Label>Order Date</Form.Label>
-                        <Form.Control type="date" placeholder={Date.now()} readOnly/>
-                    </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group as={Col} controlId="formGridCustomer">
-                        <Form.Label>Customer</Form.Label>
-                        <Form.Control type="email" placeholder={order.customer}/>
-                    </Form.Group>
+        <OrderDetails id={id}/>
 
-                    <Form.Group as={Col} controlId="formGridServer">
-                        <Form.Label>Waiter</Form.Label>
-                        <Form.Control type="text" placeholder={order.server}/>
-                    </Form.Group>
-                </Form.Row>
-
-                <Form.Group controlId="formGridItems">
-                    <Form.Label>Items</Form.Label>
-                    {order.items.map((item) => (
-
-                        <InputGroup className={"mb-3"}>
-                            <Form.Control placeholder={item.name}/>
-                            <InputGroup.Append>
-                                <InputGroup.Text>DKK</InputGroup.Text>
-                                <InputGroup.Text>{item.cost}</InputGroup.Text>
-                            </InputGroup.Append>
-                        </InputGroup>
-
-                    ))}
-                    <Form.Text>Total: {order.total}</Form.Text>
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    <FormattedMessage id={"save"}/>
-                </Button>
-            </Form>
-        </div>
     )
 }

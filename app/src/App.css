@@ -12,6 +12,31 @@
     color: white;
 
 }
+body {
+    margin: 0;
+    height: 100vh;
+    color: #353535;
+    font-family: 'Roboto', sans-serif;
+}
+
+#root {
+    height: 100%;
+}
+.app {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    position: relative;
+}
+main {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+
 
 .App-background {
 
@@ -25,3 +50,17 @@
     border-right: 1px solid black;
 }
 
+.btn-toggle {
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    background: #353535;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    display: none;
+}

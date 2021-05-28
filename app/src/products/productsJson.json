@@ -1,0 +1,71 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "category": "Breakfast",
+      "name": "Morning plate",
+      "picture": "https://via.placeholder.com/350x150",
+      "price": 79,
+      "status": 1,
+      "description": "Freshbaked rye, hardboild egg, whole avocado, butter & cheese",
+      "ingredients": [
+        "Rye",
+        "Egg",
+        "Avocado",
+        "Butter",
+        "Cheese"
+      ],
+      "approach": [
+        {
+          "step": 1,
+          "instruction": "Boil the egg for 6 minutes"
+        },
+        {
+          "step": 2,
+          "instruction": "Cut a piece of rye, butter it and put a slice of cheese on top"
+        },
+        {
+          "step": 3,
+          "instruction": "Slice and dice the avocado"
+        },
+        {
+          "step": 4,
+          "instruction": "Serve the rye with avocado and an egg on the side"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "category": "Breakfast",
+      "name": "Bun with cheese",
+      "price": "35",
+      "status": 1,
+      "description": "Freshbaked bun with unika chesse & butter"
+    },
+    {
+      "id": 3,
+      "category": "Breakfast",
+      "name": "Smoothie bowl",
+      "price": "59",
+      "status": 1,
+      "description": "Blended berries, banana, oat milk, topping"
+    },
+    {
+      "id": 4,
+      "category": "Lunch",
+      "name": "Pasta salad",
+      "price": "45",
+      "status": 1,
+      "description": "Pasta, green pesto, mozzarella, sun dried tomatoes, rucola"
+    },
+    {
+      "id": 5,
+      "category": "Lunch",
+      "name": "Buddah Bowl",
+      "price": "59",
+      "status": 1,
+      "description": "Feld salat, red kale, chickpeas, beans, carrot, asian dressing"
+    }
+  ]
+}
+
