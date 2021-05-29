@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import { MenuItem, SubMenu } from "react-pro-sidebar";
-import { Link } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
-import { FaUser } from "react-icons/all";
-import { Button, Container, Col, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
+import React, {useState} from "react";
+import {useAuth0} from "@auth0/auth0-react";
+import {MenuItem, SubMenu} from "react-pro-sidebar";
+import {Link} from "react-router-dom";
+import {FormattedMessage} from "react-intl";
+import {FaUser} from "react-icons/all";
+import {Button, Col, Container, Form} from "react-bootstrap";
 import themes from "../configuration/themes";
 import locations from "../configuration/locations";
 import currency from "../configuration/currency";
@@ -14,24 +14,24 @@ export const ProfileRoutes = [
     {
         path: "/profile",
         exact: true,
-        sidebar: <FormattedMessage id="profile" />,
-        main: () => <Overview metadata={<Meta />} />,
+        sidebar: <FormattedMessage id="profile"/>,
+        main: () => <Overview metadata={<Meta/>}/>,
     },
     {
         path: "/profile/history",
-        sidebar: <FormattedMessage id="history" />,
-        main: () => <FormattedMessage id="history" />
+        sidebar: <FormattedMessage id="history"/>,
+        main: () => <FormattedMessage id="history"/>
     },
     {
         path: "/profile/settings",
-        sidebar: <FormattedMessage id="settings" />,
-        main: () => < Settings />
+        sidebar: <FormattedMessage id="settings"/>,
+        main: () => < Settings/>
     }
 ];
 
 const Meta = () => {
-    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-    const [userMetadata, setUserMetadata] = useState(user);
+    const {user, isAuthenticated} = useAuth0();
+    const [userMetadata] = useState(user);
     let frandineMetaKeys = Object.keys(userMetadata['https://frandine.randomphp.com/user_metadata']);
     let genMetaKeys = Object.keys(userMetadata);
     return (
@@ -69,7 +69,7 @@ const Meta = () => {
                             General meta data:
                         </div>
                         {genMetaKeys.map((key) => {
-                            if(!key.includes('https') && !key.includes('picture')) {
+                            if (!key.includes('https') && !key.includes('picture')) {
                                 return <div className="text-md-center">
                                     {key} : {userMetadata[key]}
                                 </div>
@@ -101,8 +101,8 @@ export class Profile extends React.Component {
 
         return (
 
-            <SubMenu title={<FormattedMessage id={"account"} />}
-                icon={<FaUser />}>
+            <SubMenu title={<FormattedMessage id={"account"}/>}
+                     icon={<FaUser/>}>
                 {routes.map((route, index) => (
                     <MenuItem key={index}>
                         <Link to={route.path}>{route.sidebar}</Link>
@@ -119,15 +119,15 @@ export class Profile extends React.Component {
 function Overview(props) {
     return (
         <div>
-            <h2><FormattedMessage id={"profile"} /></h2>
+            <h2><FormattedMessage id={"profile"}/></h2>
             {props.metadata}
         </div>
     )
 }
 
 function Settings() {
-    const { user } = useAuth0();
-    let profileSettings = user['https://frandine.randomphp.com/user_metadata'];
+    const {user} = useAuth0();
+    const [userMetadata] = useState(user['https://frandine.randomphp.com/user_metadata']);
     let langMenu = Object.keys(translations);
     let themeMenu = Object.keys(themes);
     let locMenu = Object.keys(locations);
@@ -136,112 +136,67 @@ function Settings() {
     return (
         <div>
             <Container>
-                <Row>
-                    <Col>
-                        <div>
-                            <h2><FormattedMessage id={"settings"} /></h2>
-                        </div>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form>
-                            <Form.Group>
-                                <Form.Label><FormattedMessage id={"language"} /></Form.Label>
-                                {[DropdownButton].map((DropdownType, idx) => (
-                                    <DropdownType
-                                        key={idx}
-                                        id={`dropdown-button-drop-${idx}`}
-                                        size="sm"
-                                        variant="secondary"
-                                        title={<FormattedMessage id={"language"} />}
-                                    >
-                                        {langMenu.map((lang) => {
-                                            return <Dropdown.Item value={lang}>{translations[lang]['langName']}</Dropdown.Item>
-                                        })}
-                                    </DropdownType>
-                                ))}
-                                <Form.Text className="text-muted">
-                                    <FormattedMessage id={"desiredLanguage"} />
-                                </Form.Text>
-                            </Form.Group>
-                        </Form>
-                    </Col>
-                    <Col>
-                        <Form.Group>
-                            <Form.Label><FormattedMessage id={"colorTheme"} /></Form.Label>
-                            {[DropdownButton].map((DropdownType, idx) => (
-                                <DropdownType
-                                    key={idx}
-                                    id={`dropdown-button-drop-${idx}`}
-                                    size="sm"
-                                    variant="secondary"
-                                    title={themes[profileSettings['theme']]}
-                                >
-                                    {themeMenu.map((theme) => {
-                                        return <Dropdown.Item value={theme}>{themes[theme]}</Dropdown.Item>
-                                    })}
-                                </DropdownType>
-                            ))}
-                            <Form.Text className="text-muted">
-                                <FormattedMessage id={"desiredTheme"} />
-                            </Form.Text>
+                <h2><FormattedMessage id={"settings"}/></h2>
+                <Form>
+
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="languageSelect">
+                            <Form.Label><FormattedMessage id={"language"}/></Form.Label>
+                            <Form.Control as="select"
+                                          defaultValue={translations[userMetadata['locale'].substring(0, 2)]['langName']}>
+                                {
+                                    langMenu.map((key) => {
+                                            return <option>{translations[key]['langName']}</option>
+                                        }
+                                    )
+                                }
+                            </Form.Control>
                         </Form.Group>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Form>
-                            <Form.Group>
-                                <Form.Label><FormattedMessage id={"location"} /></Form.Label>
-                                {[DropdownButton].map((DropdownType, idx) => (
-                                    <DropdownType
-                                        key={idx}
-                                        id={`dropdown-button-drop-${idx}`}
-                                        size="sm"
-                                        variant="secondary"
-                                        title={<FormattedMessage id={"location"} />}
-                                    >
-                                        {locMenu.map((loc) => {
-                                            return <Dropdown.Item value={loc}>{locations[loc]}</Dropdown.Item>
-                                        })}
-                                    </DropdownType>
-                                ))}
-                                <Form.Text className="text-muted">
-                                    <FormattedMessage id={"assignedLocation"} />
-                                </Form.Text>
-                            </Form.Group>
-                        </Form>
-                    </Col>
-                    <Col>
-                        <Form>
-                            <Form.Group>
-                                <Form.Label><FormattedMessage id={"currency"} /></Form.Label>
-                                {[DropdownButton].map((DropdownType, idx) => (
-                                    <DropdownType
-                                        key={idx}
-                                        id={`dropdown-button-drop-${idx}`}
-                                        size="sm"
-                                        variant="secondary"
-                                        title={<FormattedMessage id={"currency"} />}
-                                    >
-                                        {currencyMenu.map((cur) => {
-                                            return <Dropdown.Item value={cur}>{currency[cur]}</Dropdown.Item>
-                                        })}
-                                    </DropdownType>
-                                ))}
-                                <Form.Text className="text-muted">
-                                    <FormattedMessage id={"desiredCurrency"} />
-                                </Form.Text>
-                            </Form.Group>
-                        </Form>
-                    </Col>
-                </Row>
-                <Row>
+
+                        <Form.Group as={Col} controlId="colorthemeSelect">
+                            <Form.Label><FormattedMessage id={"colorTheme"}/></Form.Label>
+                            <Form.Control as="select" defaultValue={userMetadata['theme']}>
+                                {
+                                    themeMenu.map((key) => {
+                                            return <option value={key}>{themes[key]}</option>
+                                        }
+                                    )
+                                }
+                            </Form.Control>
+                        </Form.Group>
+                    </Form.Row>
+
+                    <Form.Row>
+                        <Form.Group as={Col} controlId="locationSelect">
+                            <Form.Label><FormattedMessage id={"location"}/></Form.Label>
+                            <Form.Control as="select" defaultValue={userMetadata['location']}>
+                                {
+                                    locMenu.map((key) => {
+                                            return <option value={key}>{locations[key]}</option>
+                                        }
+                                    )
+                                }
+                            </Form.Control>
+                        </Form.Group>
+
+                        <Form.Group as={Col} controlId="currencySelect">
+                            <Form.Label><FormattedMessage id={"currency"}/></Form.Label>
+                            <Form.Control as="select" defaultValue={userMetadata['currency']}>
+                                {
+                                    currencyMenu.map((key) => {
+                                            return <option value={key}>{currency[key]}</option>
+                                        }
+                                    )
+                                }
+                            </Form.Control>
+                        </Form.Group>
+                    </Form.Row>
+
                     <Button variant="primary" type="submit">
-                        <FormattedMessage id={"save"} />
+                        Submit
                     </Button>
-                </Row>
+
+                </Form>
             </Container>
         </div>
     )
