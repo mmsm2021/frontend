@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import {FormattedMessage} from "react-intl";
-import {MenuItem, SubMenu} from "react-pro-sidebar";
+import {Menu, MenuItem, SubMenu} from "react-pro-sidebar";
 import { FaTable} from "react-icons/all";
 import React from "react";
 import {AppDT, CustomDatatable} from "../orders/datatable";
@@ -22,6 +22,7 @@ export const BookingRoutes =[
 ]
 export const Booking = () =>{
     return(
+        <Menu iconShape={"circle"}>
         <SubMenu title={<FormattedMessage id={"bookings"}/>}
                  icon={<FaTable/>}>
             {BookingRoutes.map((route, index) => (
@@ -32,6 +33,7 @@ export const Booking = () =>{
             ))}
 
         </SubMenu>
+        </Menu>
     )
 }
 const mockdata =[

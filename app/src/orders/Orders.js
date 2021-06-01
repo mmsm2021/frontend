@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {MenuItem, SubMenu} from 'react-pro-sidebar';
-import 'react-pro-sidebar/dist/css/styles.css';
+import {Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import {Link, useParams} from "react-router-dom";
 import './orders.css'
 import {FaReceipt} from "react-icons/all";
-import {Badge, Button, Col, Form, InputGroup} from "react-bootstrap";
+import { Formik, Form, Field, FieldArray } from 'formik';
 import {FormattedMessage} from "react-intl";
-import {api, OrderDetails, OrderTable} from "./OrderService";
-import axios from "axios";
+import {api, OrderDetails} from "./OrderService";
+import OrderTable from "./OrderTable";
+import {useAuth0} from "@auth0/auth0-react";
+import {UserOrder} from "./UserOrder";
 
 export const OrderRoutes =
     [
@@ -42,29 +43,6 @@ export const OrderRoutes =
             main: () => <Details />
         }];
 
-
-//     for (let index in data.orders) {
-//         let obj = data.orders[index];
-//         let key = null;
-//         for (let ind in obj) {
-//             if (key == null) key = ind;
-//             obj = obj[ind];
-//             cdm_orders.push(obj);
-//         }
-//     }
-//     console.log(cdm_orders);
-//     this.setState({orders: cdm_orders,
-//         isLoading: false});
-// },
-// (error) => {
-//     console.log(error.message);
-//     this.setState({
-//         isLoading: true,
-//         error
-//     });
-// });
-
-
 class Orders extends React.Component {
     constructor(props) {
         super(props);
@@ -84,21 +62,21 @@ class Orders extends React.Component {
 
     render() {
         delete OrderRoutes[0];
-        delete OrderRoutes.last;
-        const isLoading = this.state.isLoading;
+
 
         return (
+            <Menu iconShape={"circle"}>
+                <SubMenu title={<FormattedMessage id={"orderPlural"}/>}
+                         icon={<FaReceipt/>}>
+                    {OrderRoutes.map((route, index) => (
 
-            <SubMenu title={<FormattedMessage id={"orderPlural"}/>}
-                     icon={<FaReceipt/>}>
-                {OrderRoutes.map((route, index) => (
+                        <MenuItem key={index} >
+                            <Link to={route.path}>{route.sidebar}</Link>
+                        </MenuItem>
+                    ))}
 
-                    <MenuItem key={index} suffix={<Badge variant="light" pill>{OrderRoutes.length}</Badge>}>
-                        <Link to={route.path}>{route.sidebar}</Link>
-                    </MenuItem>
-                ))}
-
-            </SubMenu>
+                </SubMenu>
+            </Menu>
         )
     }
 }
@@ -113,7 +91,7 @@ const Active = () => {
         <div>
             <h2>Active</h2>
 
-            <OrderTable which="active" useMockdata={true} />
+            <OrderTable which="active"/>
         </div>
     );
 }
@@ -140,39 +118,68 @@ const Finished = () => {
 }
 
 const Create = () =>{
-    let order;
-    let items=[];
-    const addItem = event =>{
-
+    const {user} = useAuth0();
+    const userIs = user['https://frandine.randomphp.com/roles'];
+    console.log(userIs);
+    if (userIs[0] === "Customer"){
+        return <UserOrder/>
     }
+
     return (
-        <div>
+        <>
             <h2>New order</h2>
-            <Form>
-
-                <Form.Row>
-                    <Form.Group as={Col} controlId="formGridCustomer">
-                        <Form.Label>Customer</Form.Label>
-                        <Form.Control type="email" placeholder="Email"/>
-                        <Form.Control type="text" placeholder="Name"/>
-                    </Form.Group>
-
-                    <Form.Group as={Col} controlId="formGridServer">
-                        <Form.Label>Waiter</Form.Label>
-                        <Form.Control type="text" placeholder=""/>
-                    </Form.Group>
-                </Form.Row>
-
-                <Form.Group controlId="formGridItems">
-                    <Form.Label>Items</Form.Label>
-
-                    <Form.Text>Total: </Form.Text>
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    <FormattedMessage id={"save"}/>
-                </Button>
-            </Form>
-        </div>
+            <Formik
+                initialValues={{
+                    customer: {
+                        name: '',
+                        email: ''
+                    },
+                    items:[]
+                }}
+                onSubmit={async (values) =>{
+                    await new Promise((r) => setTimeout(r, 500));
+                    alert(JSON.stringify(values, null, 2));
+                }}
+                render={({ values }) =>(
+                    <Form className={"form"}>
+                        <FieldArray
+                            name="items"
+                            render={arrayHelpers => (
+                                <div className={"form-group"}>
+                                    {values.items && values.items.length > 0 ? (
+                                        values.items.map((item, index) => (
+                                            <div key={index}>
+                                                <Field name={`items.${index}`} />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => arrayHelpers.remove(index)} // remove a friend from the list
+                                                >
+                                                    -
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => arrayHelpers.insert(index, '')} // insert an empty string at a position
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <button type="button" onClick={() => arrayHelpers.push('')}>
+                                            {/* show this when user has removed all friends from the list */}
+                                            Add item
+                                        </button>
+                                    )}
+                                    <div>
+                                        <button type="submit">Submit</button>
+                                    </div>
+                                </div>
+                            )}
+                        />
+                    </Form>
+                )}
+                />
+        </>
     )
 }
 

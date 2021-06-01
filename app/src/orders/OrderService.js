@@ -8,9 +8,11 @@ import {Details} from "./Orders";
 import {FaInfo, FaList, FaPlus} from "react-icons/all";
 import {ProductPopup} from "../products/Products";
 import {Alerter} from "../services/AlertService";
-import {api} from "../services/ApiService";
+import {api, AuthApi} from "../services/ApiService";
 import mockdata from "./mockOrders.json";
 import {DataGrid} from "@material-ui/data-grid";
+import {withAuth0} from "@auth0/auth0-react";
+import fakeProducts from "../products/productsJson.json";
 export function ConvertJson(props) {
     console.log("Converting -> ", props);
     const retVal = [];
@@ -40,10 +42,11 @@ function ListEntry(props){
     )
 }
 
-export class  OrderDetails extends React.Component{
+export class OrderDetails extends React.Component{
     state ={
 
         order: {},
+        customer:{},
         itemName: "",
         modalShow: false,
         error: ""
@@ -53,7 +56,9 @@ export class  OrderDetails extends React.Component{
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-
+        if (this.props.order){
+            this.setState({order: this.props.order});
+        }
 
     }
     getOrder = async () => {
@@ -61,7 +66,10 @@ export class  OrderDetails extends React.Component{
             let {id} = this.props;
             await api.get(`/orders/${id}`).
                 then(response => response.data)
-                .then(data => this.setState({order: data}));
+                .then(data => {
+                    this.setState({order: data});
+
+                });
         } catch (e){
             console.log(e);
             this.setState({error: e});
@@ -89,51 +97,83 @@ export class  OrderDetails extends React.Component{
             );
         }
     }
-    handleChange(e){
-    }
-    handleSubmit(e){
-        e.preventDefault();
+    getCustomer = (id) =>{
 
+        const encodedId = encodeURIComponent(id);
+        AuthApi.get(`/users/${encodedId}`)
+            .then(response => this.setState({customer: response.data}))
+            .catch(error => console.log(error.message));
+    }
+    handleChange(event){
+        const {name, value} = event;
+        this.setState({
+            [name]: value
+        });
+    }
+    handleSubmit(event){
+        event.preventDefault();
+        alert(JSON.stringify())
     }
     componentDidMount() {
-       this.getOrder();
+
+        try{
+            let {id} = this.props;
+            api.get(`/orders/${id}`).
+            then(response => response.data)
+                .then(data => {
+                    this.setState({order: data});
+                    this.getCustomer(data.orders.customer);
+                });
+        } catch (e){
+            console.log(e);
+            this.setState({error: e});
+        }
+
     }
 
     render() {
         const order = this.state.order.orders;
-
+        const {customer} = this.state;
         if (order){
-            console.log(order);
-
+            let ordered = new Date(order.orderDate).toString();
             return(
-                <div>
+                <div className={"container-sm"}>
                     <h2><FormattedMessage id={"detail"}/></h2>
                     <Form onSubmit={() => this.handleSubmit}>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formGridId">
-                                <Form.Label><FormattedMessage id="orderId"/></Form.Label>
-                                <Form.Control type="text" placeholder={order.orderId} readOnly/>
+                                <Form.Label>
+                                    <h4><FormattedMessage id="orderId"/></h4>
+                                </Form.Label>
+                                <Form.Text><h5>{order.orderId}</h5></Form.Text>
 
                             </Form.Group>
                             <Form.Group as={Col} controlId="formGridDate">
-                                <Form.Label>{<FormattedMessage id={"orderedAt"} />}
+                                <Form.Label
+                                ><h4>{<FormattedMessage id={"orderedAt"} />}</h4>
                                 </Form.Label>
-                                <Form.Control type="date" value={order.orderDate.date} readOnly/>
+                                <Form.Text><h5>{ordered}</h5></Form.Text>
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formGridCustomer">
                                 <Form.Label><FormattedMessage id={"customer"}/></Form.Label>
-                                <Form.Control type="email" placeholder={order.customer}/>
+                                <Form.Text>{customer.name}</Form.Text>
+                                <Form.Text><a href={customer.email}>{customer.email}</a></Form.Text>
                             </Form.Group>
 
                             <Form.Group as={Col} controlId="formGridServer">
                                 <Form.Label><FormattedMessage id={"server"}/></Form.Label>
-                                <Form.Control type="text" placeholder={order.server}/>
+                                <Form.Control type="text"
+                                              value={order.server}
+                                              name={"server"}
+                                              placeholder={order.server}
+                                              onChange={this.handleChange}
+                                />
                             </Form.Group>
                         </Form.Row>
 
-                        <Form.Group controlId="formGridItems">
+                        <Form.Group as={Col} md={5} controlId="formGridItems">
                             <Form.Label>Items</Form.Label>
                             {this.generateItemList()}
                             <Button className={"float-md-right"}
@@ -179,107 +219,6 @@ async function GetNameById(userId){
 
 
 }
-const columns = [
-    { field: 'orderId', headerName: 'Order ID' },
-    { field: 'orderStatus', headerName: 'Status',
-        valueFormatter: (params) => params.value ? 'In progress' : 'Delivered',
 
-
-    },
-    { field: 'server', headerName: 'Waiter'},
-    {
-
-        field: 'items',
-        headerName: 'Pre-Orders',
-        type: 'string',
-        valueFormatter: (params) => params.value.map((item)=>item.name)
-    },
-    {
-        field: 'customer',
-        headerName: 'Customer',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        // valueFormatter: async (params) => await GetNameById(params.value)
-
-
-        //     `${params.getValue(params.id, 'firstName') || ''} ${
-        //         params.getValue(params.id, 'lastName') || ''
-        //     }`,
-    },
-    {
-        field: 'orderDate',
-        headerName: 'Order Date',
-        valueFormatter: (params) => params.value = new Date(params.value),
-    },
-    {
-        field: 'actions',
-        renderCell: (params) =>(
-            <Link to={"/orders/60a771765049320d4745e092"}>
-            <Button variant={"outline-primary"}>
-                <FaInfo/>
-            </Button>
-                </Link>
-        )
-    }
-];
-export class OrderTable extends React.Component{
-    state={
-        data: [],
-        status: "",
-        isLoading: true
-    }
-    constructor(props) {
-        super(props);
-    }
-    componentDidMount() {
-        if (!this.props.useMockdata){
-            this.fetchOrders();
-        }else {
-            this.setState({data: mockdata, isLoading: false});;
-        }
-    }
-
-
-    fetchOrders(){
-        fetch("https://frandine.randomphp.com/api/v1/orders/23/last/10",{
-            headers:{
-                Authorization: `Bearer ${localStorage.getItem('bearer')}`
-            }
-        }).then(res => res.json())
-            .then(json =>{
-                console.log(json);
-                this.setState({data: json.data, isLoading: false});
-            }).catch(err => this.setState({status: err.message}));
-    }
-    getOrders(){
-        api.get("/orders/23/last/10",{ method: "GET"}).then(res =>{
-            console.log(res);
-            this.setState({data: res.data.orders});
-        })
-            .catch(err => {
-                console.log(err.message);
-                this.setState({status: err.message})
-            });
-    }
-    render() {
-
-    const {data, status, isLoading} = this.state;
-        if (status && !this.props.useMockdata) {
-            console.log(status);
-            return <Alerter message={status} type={"error"}/>;
-        }
-        if (isLoading) return <Alerter message={"Loading data..."} type={"success"}/>;
-        return (
-            <div style={{ height: 400, width: '100%' }}>
-                <DataGrid rows={data.orders}
-                          columns={columns}
-                          pageSize={5}
-                          getRowId={(row)=> row.orderId}
-                          />
-            </div>
-        );
-    }
-
-}
 
 

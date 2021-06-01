@@ -31,6 +31,15 @@ export default {
         desiredCurrency: 'Desired currency',
         location: 'Location',
         assignedLocation: 'Assigned location',
+        details: 'Details',
+        productOverview:'Product Overview',
+        newProduct: 'New Product',
+        breakfast:'Breakfast',
+        lunch:'Lunch',
+        dinner:'Main course',
+        dessert:'Dessert',
+        beverages:'Beverages'
+
     },
     da: {
         langName: 'Dansk, Danmark',
@@ -64,6 +73,11 @@ export default {
         desiredCurrency: 'Anvendt møntfod',
         location: 'Lokation',
         assignedLocation: 'Associeret lokation',
+        breakfast:'Morgenmad',
+        lunch:'Frokost',
+        dinner:'Hovedretter',
+        dessert:'Dessert',
+        beverages:'Drikke'
     }
 }
 

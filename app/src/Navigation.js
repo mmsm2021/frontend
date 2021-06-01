@@ -3,6 +3,7 @@ import React from "react";
 import {Button, Container, Image, Nav, Navbar} from "react-bootstrap";
 import Logo from "./fd_logo.svg";
 import {NavLink} from "react-router-dom";
+import {Sidebar} from "./Sidebar";
 
 
 function UserAvatar(props) {
@@ -31,7 +32,7 @@ const LoginButton = () => {
     const {loginWithRedirect} = useAuth0();
 
     return <Nav.Item>
-        <Button onClick={() => loginWithRedirect()}>Login</Button>
+        <Button onClick={() => loginWithRedirect()} block>Login</Button>
     </Nav.Item>
 }
 const LogoutButton = () => {
@@ -49,33 +50,17 @@ class Navigation extends React.Component {
 
     render() {
         return (
-            <>
             <Navbar collapseOnSelect bg="dark" variant="dark" expand="lg" sticky="top">
-                <Container>
-                    <Navbar.Brand href="#home">
-                        <img src={Logo}
-                             width="126"
-                             height="48"
-                             className="d-inline-block align-top"
-                             alt="Company Logo"/>
-                    </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="mr-auto">
-                            <Nav.Item className={"nav-link"}>
 
-                                <NavLink to="/">Home</NavLink>
-                            </Nav.Item>
-                            <Nav.Item className={"nav-link"}>
-                                <NavLink to="/test">Test</NavLink>
-                            </Nav.Item>
-                        </Nav>
+                            <Sidebar/>
+
                         <AuthAction/>
                     </Navbar.Collapse>
-                </Container>
+
             </Navbar>
 
-            </>
         )
     }
 }

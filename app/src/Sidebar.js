@@ -8,19 +8,22 @@ import fd_logo from "./fd_logo.svg"
 import bg1 from "./bg1.jpg";
 
 import {AuthAction} from "./Navigation";
-import {FaBars, FaHome} from "react-icons/all";
+import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaBars, FaHome} from "react-icons/all";
 import {FormattedMessage} from "react-intl";
 import {Link} from "react-router-dom";
 import {Booking} from "./booking/Booking";
+import {Button} from "react-bootstrap";
+import {LocationMenu} from "./location/Location";
 
-export const Sidebar = ({toggled, handleToggleSidebar}) => {
+export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSidebar}) => {
     const {user, isAuthenticated, getAccessTokenSilently, getIdTokenClaims} = useAuth0();
 
-
+    const collapseArrow = collapsed ? <FaArrowAltCircleRight/> : <FaArrowAltCircleLeft/>;
     return (
 
         <ProSidebar breakPoint="md"
                     image={bg1}
+                    collapsed={collapsed}
                     toggled={toggled}
                     onToggle={handleToggleSidebar}>
             <SidebarHeader>
@@ -55,25 +58,26 @@ export const Sidebar = ({toggled, handleToggleSidebar}) => {
                 </Menu>
                 {isAuthenticated &&
                 <SidebarContent>
-                    <Menu iconShape={"circle"}>
+                        <LocationMenu/>
+
                         <Orders/>
-                    </Menu>
-                    <Menu iconShape={"circle"}>
+
                         <Products/>
-                    </Menu>
-                    <Menu iconShape={"circle"}>
+
                         <Booking/>
-                    </Menu>
-                    <Menu iconShape={"circle"}>
+
                         <Profile/>
-                    </Menu>
+
                 </SidebarContent>
                 }
             </SidebarContent>
 
             <SidebarFooter>
                 <AuthAction/>
-
+                <Button variant={"dark"} className={"btn-block"}
+                        onClick={() => handleCollapsed(!collapsed)}>
+                    {collapseArrow}
+                </Button>
             </SidebarFooter>
         </ProSidebar>
 

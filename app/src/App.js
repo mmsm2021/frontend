@@ -7,6 +7,7 @@ import {ProductRoutes} from "./products/Products";
 import {Sidebar} from "./Sidebar";
 import {FaBars} from "react-icons/all";
 import {Main} from "./Main";
+import Navigation from "./Navigation";
 
 function App() {
     const [toggled, setToggled] = useState(false);
@@ -14,16 +15,23 @@ function App() {
     const handleToggleSidebar = (value) => {
         setToggled(value);
     };
-
+    const handleCollapsed = (value) =>{
+        setCollapsed(value);
+    }
     const {isAuthenticated} = useAuth0();
     return (
 
         <div className={`shadow-lg app ${toggled ? 'toggled' : ''} `} >
 
-                <Sidebar handleToggleSidebar={handleToggleSidebar}
-                        toggled={toggled}/>
+                <Sidebar
+                    handleCollapsed={handleCollapsed}
+                    collapsed={collapsed}
+                    handleToggleSidebar={handleToggleSidebar}
+                    toggled={toggled}
+                />
                 <Main handleToggleSidebar={handleToggleSidebar}
-                        toggled ={toggled} />
+                        toggled ={toggled}
+                />
 
         </div>
 
