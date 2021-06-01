@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import {Menu, MenuItem, SubMenu} from "react-pro-sidebar";
-import { Link } from "react-router-dom";
-import { FormattedMessage } from "react-intl";
-import { FaUser } from "react-icons/all";
-import { Button, Container, Col, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
 import React, {useState} from "react";
 import {useAuth0} from "@auth0/auth0-react";
-import {MenuItem, SubMenu} from "react-pro-sidebar";
+import {Menu, MenuItem, SubMenu} from "react-pro-sidebar";
 import {Link} from "react-router-dom";
 import {FormattedMessage} from "react-intl";
 import {FaUser} from "react-icons/all";
@@ -108,8 +101,8 @@ export class Profile extends React.Component {
 
         return (
             <Menu iconShape={"circle"}>
-                <SubMenu title={<FormattedMessage id={"account"} />}
-                    icon={<FaUser />}>
+                <SubMenu title={<FormattedMessage id={"account"}/>}
+                         icon={<FaUser/>}>
                     {routes.map((route, index) => (
                         <MenuItem key={index}>
                             <Link to={route.path}>{route.sidebar}</Link>
