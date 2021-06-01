@@ -83,6 +83,8 @@ class OrderTable extends React.Component{
             });
     }
     render() {
+        const {user} = this.props.auth0;
+        console.log(user);
         const {data, status, isLoading,error} = this.state;
         if (status && !this.props.useMockdata) {
             console.log(status);

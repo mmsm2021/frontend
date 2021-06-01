@@ -1,18 +1,10 @@
 import { Button, Col, Form, InputGroup, ListGroup, Modal, Table} from "react-bootstrap";
 import React, {useState} from "react";
-import axios from "axios";
-import {useAuth0} from "@auth0/auth0-react";
 import {FormattedMessage} from "react-intl";
-import {Link, useParams} from "react-router-dom";
 import {Details} from "./Orders";
 import {FaInfo, FaList, FaPlus} from "react-icons/all";
 import {ProductPopup} from "../products/Products";
-import {Alerter} from "../services/AlertService";
 import {api, AuthApi} from "../services/ApiService";
-import mockdata from "./mockOrders.json";
-import {DataGrid} from "@material-ui/data-grid";
-import {withAuth0} from "@auth0/auth0-react";
-import fakeProducts from "../products/productsJson.json";
 export function ConvertJson(props) {
     console.log("Converting -> ", props);
     const retVal = [];
