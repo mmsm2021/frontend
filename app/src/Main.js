@@ -2,19 +2,20 @@ import {OrderRoutes} from "./orders/Orders";
 import {ProfileRoutes} from "./profile/Profile";
 import {ProductRoutes} from "./products/Products";
 import {Route, Switch} from "react-router-dom";
-import React from "react";
+import React, {useContext} from "react";
 import {FaBars} from "react-icons/all";
 import {FormattedMessage} from "react-intl";
 import {BookingRoutes} from "./booking/Booking";
 import { makeStyles } from '@material-ui/core/styles';
-import {LocationRoutes} from "./location/Location";
+import {LocationRoutes, LocationSelect} from "./location/Location";
 import {Container, Hidden} from "@material-ui/core";
+import {Home} from "./Home";
 const MainRoutes =[
     {
         path: "/",
         exact: true,
         sidebar: <FormattedMessage id="home"/>,
-        main: () => <div><FormattedMessage id={"welcome"}/> </div>,
+        main: () => <Home/>,
     },
     {
         path: "/about",
@@ -23,20 +24,15 @@ const MainRoutes =[
     }
 
 ]
-const useStyle = makeStyles((theme) =>({
-    root:{
-        color: '#0a43e7',
 
-    },
-}));
 export const Main =({handleToggleSidebar, toggled}) =>{
-    const classes = useStyle();
+
     let routes = [];
     routes = routes.concat(OrderRoutes, ProfileRoutes, ProductRoutes, MainRoutes, BookingRoutes, LocationRoutes);
     console.log(toggled);
     return(
         routes &&
-        <main className={classes.root}>
+        <main>
             <Hidden only={"lg"}>
             <div className="btn-toggle" style={{ display: `${toggled ? `none` : `flex`}`}} onClick={() => handleToggleSidebar(!toggled)} >
                 <FaBars/>

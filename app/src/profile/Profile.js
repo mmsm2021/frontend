@@ -9,6 +9,7 @@ import themes from "../configuration/themes";
 import locations from "../configuration/locations";
 import currency from "../configuration/currency";
 import translations from "../configuration/translations";
+import {CoreApi} from "../services/ApiService";
 
 export const ProfileRoutes = [
     {
@@ -132,6 +133,7 @@ function Settings() {
     let themeMenu = Object.keys(themes);
     let locMenu = Object.keys(locations);
     let currencyMenu = Object.keys(currency);
+
 
     return (
         <div>

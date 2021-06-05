@@ -12,7 +12,10 @@ body {
     color: #d70000;
     background-color: #8199eb;
 }
-
+.brand-logo{
+    height: 70px;
+    width: 222px;
+}
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

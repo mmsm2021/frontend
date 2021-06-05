@@ -1,13 +1,14 @@
 import {FormattedMessage} from "react-intl";
-import React, {useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Menu,MenuItem, SubMenu} from "react-pro-sidebar";
-import {FaList} from "react-icons/all";
+import {FaList, FaMinus, FaPlus} from "react-icons/all";
 import {Link} from "react-router-dom";
-import {Button, Card, CardDeck, CardGroup, Col, Container, Form, Image, InputGroup, Modal} from "react-bootstrap";
+import {Accordion, Button, Card, CardDeck, CardGroup, Form, ListGroup, Modal} from "react-bootstrap";
 import fakeProducts from "./productsJson.json";
-import {Form as IkForm,FieldArray, Field, useFormik, Formik, ErrorMessage} from "formik";
-import {Autocomplete} from "@material-ui/lab";
-import {Chip, TextField} from "@material-ui/core";
+import {ProductForm} from "./ProductForm";
+import {api} from "../services/ApiService";
+import ProductCard from "./ProductCard";
+
 
 export const ProductRoutes = [
 
@@ -20,11 +21,39 @@ export const ProductRoutes = [
     {
         path: "/products/new",
         sidebar: <FormattedMessage id={"newProduct"}/>,
-        main: () => <NewProduct/>
+        main: () => <ProductForm/>
+    },
+    {
+        path: "/products/:id",
+        main: () => <ProductForm/>
     }
 
 ]
-
+export const SimpleProductList = (props) =>{
+    const {product} = props;
+    return(
+        product &&
+        <Card style={{ width: '18rem' }}>
+            <Card.Header>{product.name}</Card.Header>
+            <ListGroup variant="flush">
+                <ListGroup.Item>{product.description}</ListGroup.Item>
+            </ListGroup>
+            <Card.Footer>{product.price} DKK</Card.Footer>
+        </Card>
+    )
+}
+export const ProductDetail = (props) =>{
+    const{product, attributes} = props;
+    return(
+        product &&
+        <div style={{padding:'6px'}}>
+            <h6 className={"font-italic"}>{product.name}</h6>
+            <code>
+                {product.description}
+            </code>
+        </div>
+    )
+};
 export function ProductPopup(props) {
     return (
         <Modal
@@ -72,30 +101,63 @@ export const Products = () => {
     )
 }
 
-const ProductOverview = () =>{
-    const data = fakeProducts;
-    let products = data.products;
+export const ProductOverview = () =>{
+    const [products, setProducts] = useState([]);
+    const [modalShow, setModalShow] = useState(false);
+    const [clickedProduct, setClickedProduct] = useState();
+    const [quant, setQuant] = useState(1);
+    const handleIncrement =()=>{
+        setQuant(quant + 1);
+    }
+    const handleDecrement = () =>{
+        setQuant(quant - 1);
+    }
+    useEffect(()=>{
+        api.get(`/products`).
+            then(res => setProducts(res.data))
+            .catch(err => console.log(err));
+
+    },[])
     return(
         <>
             <h2><FormattedMessage id={"productOverview"}/></h2>
-            <CardGroup >
-            {products.map((product)=>(
-                <Card style={{ width: '18rem' }} >
-                    <Card.Img variant="top" src={product.picture} />
-                    <Card.Body>
-                        <Card.Title>{product.name}</Card.Title>
-                        <Card.Text>
-                            {product.description}
-                        </Card.Text>
-                        <Button variant="primary">More info</Button>
-                    </Card.Body>
-                </Card>
-            ))}
-        </CardGroup>
+            {products.map((product) =>(
+                <ProductCard product={product}
+                         show={() => setModalShow(true)}/>
+                )
+
+            )}
+
+            <ProductPopup show={modalShow}
+                          extProduct={clickedProduct}
+                          onHide={()=> setModalShow(false)}
+                          />
             </>
     );
 }
-let IngredientOptions =[
+export const ProductCategories =[
+    {
+        id: 0,
+        category:'Breakfast'
+    },
+    {
+        id: 1,
+        category:'Lunch'
+    },
+    {
+        id: 2,
+        category:'Dinner'
+    },
+    {
+        id: 3,
+        category:'Dessert'
+    },
+    {
+        id: 4,
+        category:'Beverages'
+    },
+];
+export let IngredientOptions =[
     {name:"Egg"},
     {name:"Cheese"},
     {name:"Rye"},
@@ -119,101 +181,6 @@ let IngredientOptions =[
     {name:"Garlic"},
     {name:"Oil"},
 ];
-class NewProduct extends React.Component{
-    constructor(props) {
-        super(props);
-        this.state ={
-            id: null,
-            name: "",
-            locationId:null,
-            price: "10",
-            discountPrice: null,
-            discountFrom: null,
-            discountTo: null,
-            status: 1,
-            attributes: [],
-            instructions: "",
-            description: "",
-            uniqueIdentifier: null,
-            createdAt: null,
-            updatedAt: null,
-            deletedAt: null
-        }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleIngredientChange = this.handleIngredientChange.bind(this);
-    }
-    handleChange(event){
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        console.log(name, value);
-
-        this.setState({
-            [name]: value
-        });
-    }
-    handleIngredientChange(event){
-        const {id, name, value} = event.target;
-        this.setState({
-            attributes: {
-                [name]: value
-            }
-        });
-
-    }
-    handleSubmit(event){
-        alert(JSON.stringify(this.state));
-        event.preventDefault();
-    }
-
-    render() {
-        let attributes = this.state.attributes;
-        let ingredients = [];
-        return(
-            <Container className={"shadow-lg lg"} fluid>
-                <h3 className={"border-bottom"}><FormattedMessage id={"newProduct"}/></h3>
-                <Form onSubmit={() => this.handleSubmit()} >
-                    <Form.Group as={Col}>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control id={"name"}
-                                      name={"name"}
-                                      value={this.state.name}
-                                      onChange={this.handleChange}/>
-
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control id={"description"}
-                                      name={"description"}
-                                      as={"textarea"}
-                                      value={this.state.description}
-                                      onChange={this.handleChange}/>
-                    </Form.Group>
-                    <Form.Row>
-                        <Form.Label>Attributes</Form.Label>
-                    </Form.Row>
-
-                        <Form.Group as={Col} >
-                            <Form.Label>Ingredients</Form.Label>
-
-
-                        </Form.Group>
-                        <Form.Group as={Col} >
-                            <Form.Label>Instructions</Form.Label>
-                            <Form.Control id={"instructions"}
-                                          name={"instructions"}
-                                          as={"textarea"}
-                                          value={this.state.instructions}
-                                          onChange={this.handleChange}
-                                          />
-                        </Form.Group>
-
-                    <button type="submit">Save</button>
-                </Form>
-            </Container>
-        )
-    }
-}
-
 
 
 

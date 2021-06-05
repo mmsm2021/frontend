@@ -13,7 +13,8 @@ const columns = [
     {
         field: 'orderDate',
         headerName: 'Order Date',
-        valueFormatter: (params) => params.value = new Date(params.value),
+        width: 210,
+        valueFormatter: (params) => params.value = new Date(params.value).toDateString(),
     },
     { field: 'orderStatus', headerName: 'Status',
         valueFormatter: (params) => params.value ? 'In progress' : 'Delivered',
@@ -42,7 +43,7 @@ const columns = [
     },
     {
         field: 'orderId',
-        headerName: 'Action',
+
         renderCell: (params) =>(
             <Link to={`/orders/${params.value}`}>
                     <FaInfo/>
@@ -73,7 +74,8 @@ class OrderTable extends React.Component{
     }
 
     getOrders(){
-        api.get("/orders/23/last/10",{ method: "GET"}).then(res =>{
+        api.get("/orders/a2aa3ad2-9000-492b-ab52-458d745583e3/last/10")
+            .then(res =>{
             console.log(res);
             this.setState({data: res.data, isLoading: false});
         })
@@ -84,7 +86,6 @@ class OrderTable extends React.Component{
     }
     render() {
         const {user} = this.props.auth0;
-        console.log(user);
         const {data, status, isLoading,error} = this.state;
         if (status && !this.props.useMockdata) {
             console.log(status);

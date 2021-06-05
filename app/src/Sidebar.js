@@ -1,7 +1,7 @@
 import {useAuth0} from "@auth0/auth0-react";
 import {Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SidebarHeader, SubMenu} from "react-pro-sidebar";
-import React, {useState} from "react";
-import Orders from "./orders/Orders";
+import React, {useContext, useState} from "react";
+import {OrderMenu} from "./orders/Orders";
 import {Profile} from "./profile/Profile";
 import {Products} from "./products/Products";
 import fd_logo from "./fd_logo.svg"
@@ -12,17 +12,25 @@ import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaBars, FaHome} from "react
 import {FormattedMessage} from "react-intl";
 import {Link} from "react-router-dom";
 import {Booking} from "./booking/Booking";
-import {Button} from "react-bootstrap";
-import {LocationMenu} from "./location/Location";
+import {Button, Image} from "react-bootstrap";
+import {LocationMenu, LocationSelect} from "./location/Location";
+import {Context} from "./configuration/Store";
 
-export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSidebar}) => {
+export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSidebar, bgImage}) => {
     const {user, isAuthenticated, getAccessTokenSilently, getIdTokenClaims} = useAuth0();
-
+    const [state,dispatch] = useContext(Context);
     const collapseArrow = collapsed ? <FaArrowAltCircleRight/> : <FaArrowAltCircleLeft/>;
+    let logo_url = fd_logo;
+    try {
+        const {branding} = state.location.metadata;
+        logo_url = branding.logo_url;
+    } catch (err){
+        console.log(err);
+    }
     return (
 
         <ProSidebar breakPoint="md"
-                    image={bg1}
+                    image={bgImage ? bgImage : bg1}
                     collapsed={collapsed}
                     toggled={toggled}
                     onToggle={handleToggleSidebar}>
@@ -36,31 +44,25 @@ export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSideba
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                }}>                <img src={fd_logo}
-                                        alt={"company logo"}/></div>
-
-
+                    textAlign: 'center'
+                }}>
+                    <LocationSelect noButton/>
+                <Image src={logo_url} thumbnail />
+                    <h4>{state.location.name}</h4>
+                </div>
             </SidebarHeader>
-            <SidebarContent>
+            <SidebarContent >
                 <Menu iconShape={"circle"}>
-                    <SubMenu icon={<FaHome/>} title={"Menu"}>
-                        <MenuItem>
+                        <MenuItem icon={<FaHome/>}>
                             <FormattedMessage id={"home"}/>
-                            <Link to={"/home"}/>
+                            <Link to={"/"}/>
                         </MenuItem>
-                        <MenuItem>
-                            <FormattedMessage id={"about"}/>
-                        </MenuItem>
-                        <MenuItem>
-                            <FormattedMessage id={"contact"}/>
-                        </MenuItem>
-                    </SubMenu>
                 </Menu>
                 {isAuthenticated &&
                 <SidebarContent>
                         <LocationMenu/>
 
-                        <Orders/>
+                        <OrderMenu/>
 
                         <Products/>
 

@@ -43,6 +43,45 @@
       "description": "Freshbaked bun with unika chesse & butter"
     },
     {
+      "name": "Morning plate",
+      "locationId": "a2aa3ad2-9000-492b-ab52-458d745583e3",
+      "price": "79",
+      "discountPrice": null,
+      "discountFrom": null,
+      "discountTo": null,
+      "status": 1,
+      "attributes": {
+        "ingredients": [
+          "Rye",
+          "Egg",
+          "Avocado",
+          "Butter",
+          "Cheese"
+        ],
+        "approach": [
+          {
+            "step": 1,
+            "instruction": "Boil the egg for 6 minutes"
+          },
+          {
+            "step": 2,
+            "instruction": "Cut a piece of rye, butter it and put a slice of cheese on top"
+          },
+          {
+            "step": 3,
+            "instruction": "Slice and dice the avocado"
+          },
+          {
+            "step": 4,
+            "instruction": "Serve the rye with avocado and an egg on the side"
+          }
+        ],
+        "category": "Breakfast"
+      },
+      "description": "Freshbaked rye, hardboild egg, whole avocado, butter & cheese",
+      "uniqueIdentifier": "3016d892-046b-47f6-917b-3bd49ddc99d0"
+    },
+    {
       "id": 3,
       "category": "Breakfast",
       "name": "Smoothie bowl",

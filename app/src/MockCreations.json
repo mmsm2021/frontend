@@ -1,0 +1,19 @@
+{
+  "location": "The MealMate",
+  "locationId": "7c57c834-0512-4acb-a768-ebb368c120f1",
+  "server": "auth0|60b894c56b1af90068de1eaf",
+  "customer": "auth0|60b89497239e8b007022f188",
+  "items": [
+    {
+      "product": "1bf0a9a8-87a0-4f95-b91d-4ba369c58494",
+      "nr": 0,
+      "name": "Sloppy Joes",
+      "cost": "80",
+      "qty": 2,
+      "totalPrice": "75",
+      "delivered": null
+    }
+  ],
+  "discount": 5,
+  "orderStatus":1
+}

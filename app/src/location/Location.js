@@ -1,19 +1,23 @@
 import {FormattedMessage} from "react-intl";
 import {Menu, MenuItem, SubMenu} from "react-pro-sidebar";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {FaLocationArrow} from "react-icons/all";
-import fakeLocation from "./mockLocation.json";
 import {Container} from "@material-ui/core";
 import { Formik, ErrorMessage } from 'formik';
-import {Button, Col, Form, InputGroup} from "react-bootstrap";
+import {Button, Col, Form, InputGroup, Modal} from "react-bootstrap";
+import {useContext, useEffect, useState} from "react";
+import {CoreApi} from "../services/ApiService";
+import {Context} from "../configuration/Store";
+import {Alerter} from "../services/AlertService";
 export const LocationRoutes=[
      {
          path: "/location",
          exact: true,
          sidebar: <FormattedMessage id={"location"}/>,
-         main: () => <LocationDetail/>
+         main: () =><LocationDetail/>
      }
  ];
+
 
 export const LocationMenu = () =>{
     return(
@@ -27,21 +31,103 @@ export const LocationMenu = () =>{
         </Menu>
     )
 }
-const dkStates = [
-    "Region Hovedstaden",
-    "Region Midtjylland",
-    "Region Sjælland",
-    "Region Syddanmark"
-];
-export const LocationDetail = () =>{
-    const location = fakeLocation[0];
-    console.log(fakeLocation);
+export const LocationSelect = ({noButton}) =>{
+    // Initial entry point for the application
+    const [locations, setLocations] = useState([]);
+    const [state,dispatch] = useContext(Context);
+    useEffect(() =>{
+
+        CoreApi.get("/locations")
+            .then(res => setLocations(res.data))
+            .catch(err => console.log(err));
+
+    },[]);
+
+    // Get location ID from context
+    // Allow end user to be assigned to a location
+    return(
+        <Formik initialValues={{
+            locationId: state.location.id
+        }}
+                onSubmit={async (values) => {
+
+                    await CoreApi.get(`/locations/${values.locationId}`)
+                        .then(res => {
+                            const result = res.data;
+                            dispatch({type:'SET_LOCATION', payload:result});
+                        }).catch(err => dispatch({type: 'SET_ERROR', payload:err}));
+                }}>
+            {({ values,handleChange,handleSubmit}) =>(
+                <Form onSubmit={handleSubmit}>
+                    <Form.Label>Location</Form.Label>
+                    <Form.Control as={"select"}
+                                  name={"locationId"}
+                                  value={values.locationId}
+                                  onChange={handleChange}>
+                        {locations.map((location, index) =>(
+                            <option value={location.id} onClick={handleSubmit}>{location.name} - {location.city}</option>
+                        ))}
+
+                    </Form.Control>
+                    {noButton ? noButton : (<Button type={"submit"}>Save</Button>) }
+
+                </Form>
+            )}
+        </Formik>
+    );
+
+
+}
+export const LocationDetail = (props) =>{
+    const [location, setLocation] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [patched, setPatched] = useState("");
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const [state, dispatch] = useContext(Context);
+    useEffect(() =>{
+        console.log(state.location.id)
+        CoreApi.get(`/locations/${state.location.id}`)
+            .then(res => {
+                setLocation(res.data);
+                setLoading(false);
+            })
+            .catch(err => console.log(err));
+    },[state.location]);
+    if (loading){
+        return <Alerter type={"success"} message={"Loading location..."}/>
+    }
+
+        let controls =[];
+        let {metadata} = location;
+        let {branding} = location.metadata;
+        let {colors} = branding;
+        let {primary, page_background} = colors
+
+
+
     return(
         <>
-            <Formik initialValues={location}
+            <Formik initialValues={{
+                name: location.name,
+                // point: location.point,
+                metadata: location.metadata,
+                street: location.street,
+                number: location.number,
+                zipcode: location.zipcode,
+                city: location.city,
+                country: location.country,
+
+
+
+            }
+            }
                     onSubmit={(values, { setSubmitting }) => {
                                     setTimeout(() => {
-                                    alert(JSON.stringify(values, null, 2));
+                                    CoreApi.patch(`/locations/${state.location.id}`,values)
+                                        .then(res => console.log(res))
+                                        .catch(err => console.log(err.message));
                                     setSubmitting(false);
                                 }, 400);
             }}>{({
@@ -62,7 +148,7 @@ export const LocationDetail = () =>{
                             </InputGroup.Prepend>
                         <Form.Control type={"text"}
                                       name={"id"}
-                                      defaultValue={values.id}
+                                      defaultValue={state.location.id}
                                       readOnly/>
                         </InputGroup>
                     </Form.Row>
@@ -77,6 +163,7 @@ export const LocationDetail = () =>{
                             isValid={touched.name && !errors.name}
                         />
                     </Form.Group>
+
                 </Form.Row>
                     <Form.Row>
                     <Form.Group as={Col} sm={4} controlId="formGridAddress1">
@@ -124,17 +211,26 @@ export const LocationDetail = () =>{
                                           onChange={handleChange}/>
                         </Form.Group>
                     </Form.Row>
+                            <Form.Label>Metadata</Form.Label>
+                    <Form.Row>
+                        <Form.Group as={Col} sm={2} controlId="metadata">
+                            <Form.Label>Primary Color</Form.Label>
+                            <Form.Control name={"primary"}
+                                          value={primary}
+                                          onChange={handleChange}/>
+                            <div style={{height: 50, width:50, backgroundColor:primary}}></div>
+                            <Form.Label>Secondary Color</Form.Label>
+                            <Form.Control name={"page_background"}
+                                          value={page_background}
+                                          onChange={handleChange}/>
+                            <div style={{height: 50, width:50, backgroundColor:page_background}}></div>
+                        </Form.Group>
+                    </Form.Row>
                     <Button type={"submit"}>Save</Button>
+                    <Button type={"button"} onClick={() => alert(JSON.stringify(values,null,2))}>Test</Button>
                 </Form>
             )}
             </Formik>
-            <footer>
-            <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=10.404269993305208%2C55.39599905640532%2C10.407810509204866%2C55.39734404541994&amp;layer=mapnik&amp;marker=55.396672000031636%2C10.406038999999964" ></iframe>
-            <br/>
-            <small>
-                <a href="https://www.openstreetmap.org/?mlat=55.39667&amp;mlon=10.40604#map=19/55.39667/10.40604">View Larger Map</a>
-            </small>
-            </footer>
         </>
     )
 }

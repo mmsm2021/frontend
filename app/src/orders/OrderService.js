@@ -4,22 +4,8 @@ import {FormattedMessage} from "react-intl";
 import {Details} from "./Orders";
 import {FaInfo, FaList, FaPlus} from "react-icons/all";
 import {ProductPopup} from "../products/Products";
-import {api, AuthApi} from "../services/ApiService";
-export function ConvertJson(props) {
-    console.log("Converting -> ", props);
-    const retVal = [];
-    for (let index in props.orders) {
-        let obj = props.orders[index];
-        let key = null;
-        for (let ind in obj) {
-            if (key == null) key = ind;
-            obj = obj[ind];
-            retVal.push(obj);
-        }
-    }
-    return retVal;
-}
-
+import {api, AuthApi, OrderApi} from "../services/ApiService";
+import {NotFound} from "../NotFound";
 
 
 function ListEntry(props){
@@ -80,17 +66,12 @@ export class OrderDetails extends React.Component{
 
                         />
                     ))}
-                    <ListEntry key={obj.items.length + 1}
-                               name={" "}
-                               cost={" "}
-                               handleChange={() => this.handleChange()}
-                    />
                 </div>
             );
         }
     }
     getCustomer = (id) =>{
-
+        if (id === null) return;
         const encodedId = encodeURIComponent(id);
         AuthApi.get(`/users/${encodedId}`)
             .then(response => this.setState({customer: response.data}))
@@ -104,17 +85,32 @@ export class OrderDetails extends React.Component{
     }
     handleSubmit(event){
         event.preventDefault();
-        alert(JSON.stringify())
+        alert(JSON.stringify(event.target.value, null, 2))
+        // OrderApi.patch(`/${}`)
     }
-    componentDidMount() {
+    handleDelivered(order){
+        let deliveries = {
+            location: order.locationId,
+            items:[]
+        };
 
+        order.items.map((item)=>(
+            deliveries.items.push({itemUUID: item.itemUUID, delivered: true})
+        ));
+        console.log(deliveries);
+        OrderApi.patch(`/delivered/${order.orderId}`,deliveries )
+            .then(res => console.log(res))
+            .catch(err => console.error(err));
+    }
+
+    componentDidMount() {
+        console.clear();
         try{
             let {id} = this.props;
             api.get(`/orders/${id}`).
             then(response => response.data)
                 .then(data => {
                     this.setState({order: data});
-                    this.getCustomer(data.orders.customer);
                 });
         } catch (e){
             console.log(e);
@@ -127,27 +123,33 @@ export class OrderDetails extends React.Component{
         const order = this.state.order.orders;
         const {customer} = this.state;
         if (order){
+                this.getCustomer(order.customer);
             let ordered = new Date(order.orderDate).toString();
+            const {customer} = this.state;
             return(
-                <div className={"container-sm"}>
-                    <h2><FormattedMessage id={"detail"}/></h2>
-                    <Form onSubmit={() => this.handleSubmit}>
+                <>
+                    <Form onSubmit={this.handleSubmit}>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formGridId">
                                 <Form.Label>
                                     <h4><FormattedMessage id="orderId"/></h4>
                                 </Form.Label>
                                 <Form.Text><h5>{order.orderId}</h5></Form.Text>
-
-                            </Form.Group>
-                            <Form.Group as={Col} controlId="formGridDate">
-                                <Form.Label
-                                ><h4>{<FormattedMessage id={"orderedAt"} />}</h4>
-                                </Form.Label>
                                 <Form.Text><h5>{ordered}</h5></Form.Text>
+
                             </Form.Group>
                         </Form.Row>
                         <Form.Row>
+                            <Form.Label>Order status</Form.Label>
+                            <Form.Control as={"select"}
+                                          type={"number"}
+                                          value={order.orderStatus}
+                                          name={"orderStatus"}
+                                          onChange={this.handleChange}>
+                                <option value={0}>Waiting</option>
+                                <option value={1}>In progress</option>
+                                <option value={2}>Finished</option>
+                            </Form.Control>
                             <Form.Group as={Col} controlId="formGridCustomer">
                                 <Form.Label><FormattedMessage id={"customer"}/></Form.Label>
                                 <Form.Text>{customer.name}</Form.Text>
@@ -181,11 +183,14 @@ export class OrderDetails extends React.Component{
                         <Button variant="primary" type="submit">
                             <FormattedMessage id={"save"}/>
                         </Button>
+                        <Button variant={"secondary"} onClick={() => this.handleDelivered(order)}>
+                            Deliver
+                        </Button>
                     </Form>
-                </div>
+                </>
             )
         }
-        return null;
+        return <NotFound what={this.props}/>;
 
     }
 }
