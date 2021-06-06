@@ -13,6 +13,7 @@ import {ProductOverview} from "../products/Products";
 import {Context} from "../configuration/Store";
 import {Form, Col, ListGroup} from "react-bootstrap";
 import {api} from "../services/ApiService";
+import OrderForm from "./OrderForm";
 
 export const OrderRoutes =
     [
@@ -52,12 +53,14 @@ export const OrderMenu = () =>{
         <Menu iconShape={"circle"}>
             <SubMenu title={<FormattedMessage id={"orderPlural"}/>}
                      icon={<FaReceipt/>}>
-                {OrderRoutes.map((route, index) => (
-
-                    <MenuItem key={index} >
-                        <Link to={route.path}>{route.sidebar}</Link>
-                    </MenuItem>
-                ))}
+                {OrderRoutes.map((route, index) => {
+                    if (!route.sidebar) return null;
+                    return (
+                        <MenuItem key={index} >
+                            <Link to={route.path}>{route.sidebar}</Link>
+                        </MenuItem>
+                    )}
+                )}
 
             </SubMenu>
         </Menu>
@@ -66,13 +69,13 @@ export const OrderMenu = () =>{
 
 
 const Active = () => {
-
+const [state] = useContext(Context);
     return (
 
         <div>
             <h2>Active</h2>
 
-            <OrderTable which="active"/>
+            <OrderTable which="active" id={state.location.id}/>
         </div>
     );
 }
@@ -113,14 +116,12 @@ export const Create = () =>{
                 })
                 .catch(err => dispatch({type:'SET_ERROR', payload:err}));
     },[]);
-    const {user} = useAuth0();
-    const userIs = user['https://frandine.randomphp.com/roles'];
-    console.log(userIs);
-    if (userIs[0] === "Customer"){
+
+    if (state.user['https://frandine.randomphp.com/roles'][0] === "Customer"){
         return <UserOrder/>
     }
     return (
-        <UserOrder/>
+        <OrderForm/>
     )
 }
 

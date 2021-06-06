@@ -9,24 +9,15 @@ import translations from "./configuration/translations";
 import {Switch} from "@material-ui/core";
 import QuickActions from "./configuration/QuickActions";
 import {ThemeProvider} from "styled-components";
-import {lightTheme, darkTheme, GlobalStyles} from "./configuration/GlobalContext";
+import {lightTheme, darkTheme, GlobalStyles, companyTheme} from "./configuration/GlobalContext";
 import {Context} from "./configuration/Store";
-export let ManagementVar= {
-    path: '/organizations',
-    id: "",
-    name: "",
-    display_name: "",
-    branding: {
-        logo: "",
-        colors: {}
-    },
-    metadata: ""
-};
+import {Alerter} from "./services/AlertService";
+
 function App() {
     const [toggled, setToggled] = useState(false);
     const [collapsed, setCollapsed] = useState(false);
     const [state, dispatch] = useContext(Context);
-    const {user, isAuthenticated} = useAuth0();
+    const {user, isAuthenticated, getIdTokenClaims} = useAuth0();
     const handleToggleSidebar = (value) => {
         setToggled(value);
     };
@@ -34,8 +25,10 @@ function App() {
         setCollapsed(value);
     }
     if (isAuthenticated){
-        dispatch({type:'SET_USER', payload: user});
+        const claim = getIdTokenClaims().then(res => dispatch({type:'SET_USER', payload: res.__raw}))
+            .catch(err => dispatch({type:'SET_ERROR', payload:err}));
     }
+
     return (
         <ThemeProvider theme={state.theme === 'light' ? lightTheme:darkTheme}>
 
@@ -52,7 +45,7 @@ function App() {
                                 {/*<Navigation/>*/}
                                 {/*<Route path="/" component={App}/>*/}
 
-                                <div className={`shadow-lg app`}>
+                                <div className={`shadow-lg app ${toggled ? "toggled" : ''}`}>
                                 <Sidebar
                                     handleCollapsed={handleCollapsed}
                                     collapsed={collapsed}

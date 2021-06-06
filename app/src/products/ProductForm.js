@@ -11,7 +11,8 @@ import {api} from "../services/ApiService";
 import {useContext, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {Context} from "../configuration/Store";
-
+import {Redirect} from 'react-router-dom';
+import {Alerter} from "../services/AlertService";
 const schema = yup.object().shape({
     name: yup.string().required(),
     description: yup.string().required(),
@@ -29,21 +30,29 @@ function uuidv4() {
 export const ProductForm = () => {
     const [product, setProduct] = useState({});
     const [state, dispatch] = useContext(Context);
-    const {id} = useParams();
-    useEffect(()=>{
+    const [loading, setLoading] = useState(false);
+    let { id } = useParams();
+    let prodIng = [];
+    let prodApp = [];
+    let prodCat = 0;
+    let prodPic = "https://picsum.photos/200/100";
+    useEffect(async()=>{
         if (id){
-            api.get(`/products/${id}`).
+            setLoading(true);
+            await api.get(`/products/${id}`).
             then(res =>{
                 setProduct(res.data);
             })
-                .catch(err => console.log(err));
+                .catch(err => console.log(err)).finally(() => setLoading(false));
         }
-    },[]);
+    },[id]);
+    if(loading) return <Alerter type={'success'} message={"Loading..."}/>;
 
     return(
         <Formik
             validationSchema={schema}
             onSubmit={values => {
+
                 values.attributes.ingredients = values.ingredients;
                 values.attributes.approach = values.approach;
                 // Delete temporary object properties
@@ -53,29 +62,35 @@ export const ProductForm = () => {
                 values.uniqueIdentifier = uuidv4();
                 // Send post request
                 api.post("/products", values)
-                    .then(res => console.log(res.data))
+                    .then(res => {
+                        if (res.status === 200){
+                            return <Alerter type={'success'} message={JSON.stringify(res,null,2)}/>
+                        }else {
+                            alert(JSON.stringify(res,null,2));
+                        }
+                    })
                     .catch(err => console.log(err));
-                alert(JSON.stringify(values,null, 2));
+
             }}
             initialValues={
                 {
-                    name: '',
+                    name: product.name,
                     locationId: state.location.id,
-                    price: '',
-                    status: 0,
+                    price: product.price,
+                    status: product.status,
                     attributes: {
                         ingredients:[],
                         approach:[],
-                        category:0,
-                        picture:"https://picsum.photos/200/100"
+                        category:prodCat,
+                        picture:prodPic
                     },
                     discountPrice: null,
                     discountFrom: null,
                     discountTo: null,
-                    description: '',
+                    description: product.description,
                     uniqueIdentifier: '',
-                    ingredients: [""],
-                    approach: [""],
+                    ingredients: prodIng,
+                    approach: prodApp,
 
                 }
             }>
@@ -94,7 +109,9 @@ export const ProductForm = () => {
                         <ProductCard product={values}/>
                     </div>
                     <Fmik>
-                        <Button type={"reset"}>Reset</Button>
+                        <h2>
+                        {product.id ? <FormattedMessage id={"changeProduct"}/> : <FormattedMessage id={"newProduct"}/> }
+                        </h2>
                         <Form.Row>
                             <Form.Group controlId="validationFormik101">
                                 <Form.Label><FormattedMessage id={"productName"}/></Form.Label>
@@ -255,7 +272,13 @@ export const ProductForm = () => {
                             </Form.Control.Feedback>
 
                         </Form.Row>
-                        <Button type="submit">Create product</Button>
+                        {product.id ? (
+                            <Button type={"submit"}><FormattedMessage id={'save'}/></Button>
+                        ) : (
+                            <Button type={"submit"}><FormattedMessage id={'createProduct'}/></Button>
+                        )}
+                        <Button type={"reset"} variant={"danger"}>Reset</Button>
+
                     </Fmik>
                 </>
             )}</Formik>

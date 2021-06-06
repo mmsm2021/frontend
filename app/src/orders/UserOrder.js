@@ -11,6 +11,8 @@ import {api, OrderApi} from "../services/ApiService";
 import {Context} from "../configuration/Store";
 import OrderTimeline from "./OrderTimeline";
 import {JWTParser} from "../services/JWTParser";
+import {Redirect} from "react-router-dom";
+import {Alerter} from "../services/AlertService";
 
 const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -56,13 +58,12 @@ export const UserOrder = () =>{
 
 
     },[])
-    function handleAddToCart(id){
+    async function addToCart(id){
         console.log(id);
-        api(`/products/quote/${id}`)
-            .then(res => setQuote(res.data))
-            .catch(err => console.log(err));
-        setCart((prev) =>[...prev, quote]);
-
+        await api(`/products/quote/${id}`)
+            .then(res => setCart((prev) =>[...prev,res.data]))
+            .catch(err => dispatch({type:'SET_ERROR', payload:err}));
+        console.log(cart);
     }
     async function postOrder(){
         let tokens = [];
@@ -72,17 +73,15 @@ export const UserOrder = () =>{
             discount:10,
         };
 
-        cart.map((item) =>{
-            api(`/products/quote/${item.id}`)
-                .then(res => res.data)
-                .then(data=> setQuote((prev)=>[...prev, data["token"]]))
-                .catch(err => console.log(err));
-        });
-        order.items = quote;
+        order.items = cart.map((item)=>(
+            item.token
+        ));
 
-        await OrderApi.post('', order)
-            .then(res => console.log(res))
+        let response = await OrderApi.post('', order)
+            .then(res => res.data)
             .catch(err => console.log(err));
+
+        return <Alerter type={'success'} message={`Order submitted! Order ID: ${response.orderId}`}/>
     }
     return(
         <Tab.Container id="list-group-tabs" defaultActiveKey="#breakfast">
@@ -118,10 +117,7 @@ export const UserOrder = () =>{
                             {products.map((prod, index) =>(
                                 <ProductGrid key={index}
                                              product={prod}
-                                             onAdd={() => {
-                                                 setCart((prev) =>[...prev, prod]);
-                                             }
-                                             }/>
+                                             onAdd={() => addToCart(prod.id)}/>
 
                             ))}
                         </Tab.Pane>

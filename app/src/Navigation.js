@@ -19,11 +19,16 @@ function UserAvatar(props) {
 
 export const AuthAction = () => {
     const {user, isAuthenticated, getIdTokenClaims} = useAuth0();
+    const [state,dispatch] = useContext(Context);
     if (!isAuthenticated) {
         return <LoginButton/>
     } else {
+
+        if (!state.user) dispatch({type: 'SET_USER', payload: user});
         getIdTokenClaims()
-            .then(res => localStorage.setItem("bearer", res.__raw))
+            .then(res => {
+                localStorage.setItem("bearer", res.__raw);
+            })
             .catch(err => console.log(err.message));
         return <LogoutButton/>
     }
@@ -31,9 +36,8 @@ export const AuthAction = () => {
 const LoginButton = () => {
     const {loginWithRedirect} = useAuth0();
 
-    return <Nav.Item>
-        <Button onClick={() => loginWithRedirect()} block>Login</Button>
-    </Nav.Item>
+    return <Button onClick={() => loginWithRedirect()} block>Login</Button>;
+
 }
 const LogoutButton = () => {
     const {logout} = useAuth0();

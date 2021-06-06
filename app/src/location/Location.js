@@ -4,7 +4,7 @@ import {Link, useParams} from "react-router-dom";
 import {FaLocationArrow} from "react-icons/all";
 import {Container} from "@material-ui/core";
 import { Formik, ErrorMessage } from 'formik';
-import {Button, Col, Form, InputGroup, Modal} from "react-bootstrap";
+import {Button, Col, Form, Image, InputGroup, Modal} from "react-bootstrap";
 import {useContext, useEffect, useState} from "react";
 import {CoreApi} from "../services/ApiService";
 import {Context} from "../configuration/Store";
@@ -55,6 +55,7 @@ export const LocationSelect = ({noButton}) =>{
                         .then(res => {
                             const result = res.data;
                             dispatch({type:'SET_LOCATION', payload:result});
+                            dispatch({type:'SET_CHANGE', payload: !state.didChange});
                         }).catch(err => dispatch({type: 'SET_ERROR', payload:err}));
                 }}>
             {({ values,handleChange,handleSubmit}) =>(
@@ -65,11 +66,11 @@ export const LocationSelect = ({noButton}) =>{
                                   value={values.locationId}
                                   onChange={handleChange}>
                         {locations.map((location, index) =>(
-                            <option value={location.id} onClick={handleSubmit}>{location.name} - {location.city}</option>
+                            <option value={location.id}>{location.name} - {location.city}</option>
                         ))}
 
                     </Form.Control>
-                    {noButton ? noButton : (<Button type={"submit"}>Save</Button>) }
+                    {noButton ? (<Button type={"submit"} className={"btn-sm"} block><FormattedMessage id={"switch"}/></Button> ) : (<Button type={"submit"}>Save</Button>) }
 
                 </Form>
             )}
@@ -214,6 +215,12 @@ export const LocationDetail = (props) =>{
                             <Form.Label>Metadata</Form.Label>
                     <Form.Row>
                         <Form.Group as={Col} sm={2} controlId="metadata">
+                            <Form.Label>Logo</Form.Label>
+                            <Form.Control name={"logo_url"}
+                                          value={branding.logo_url}
+                                          onChange={handleChange}
+                            />
+                            <Image src={branding.logo_url} thumbnail/>
                             <Form.Label>Primary Color</Form.Label>
                             <Form.Control name={"primary"}
                                           value={primary}

@@ -74,7 +74,7 @@ class OrderTable extends React.Component{
     }
 
     getOrders(){
-        api.get("/orders/a2aa3ad2-9000-492b-ab52-458d745583e3/last/10")
+        api.get(`/orders/${this.props.id}/last/100`)
             .then(res =>{
             console.log(res);
             this.setState({data: res.data, isLoading: false});

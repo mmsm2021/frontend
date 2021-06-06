@@ -10,6 +10,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import {LocationRoutes, LocationSelect} from "./location/Location";
 import {Container, Hidden} from "@material-ui/core";
 import {Home} from "./Home";
+import {Context} from "./configuration/Store";
+import {Alerter} from "./services/AlertService";
 const MainRoutes =[
     {
         path: "/",
@@ -26,10 +28,13 @@ const MainRoutes =[
 ]
 
 export const Main =({handleToggleSidebar, toggled}) =>{
-
+    const [state,dispatch] = useContext(Context);
     let routes = [];
     routes = routes.concat(OrderRoutes, ProfileRoutes, ProductRoutes, MainRoutes, BookingRoutes, LocationRoutes);
     console.log(toggled);
+    if (state.error){
+        return <Alerter type={'error'} message={state.error.message}/>
+    }
     return(
         routes &&
         <main>

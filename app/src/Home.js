@@ -8,7 +8,6 @@ import {useAuth0} from "@auth0/auth0-react";
 export const Home = () => {
     const [state,dispatch] = useContext(Context)
     const {location} = state;
-    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [key, setKey] = useState('home');
     useEffect(async ()=>{
@@ -23,14 +22,16 @@ export const Home = () => {
         // Get location products
         await api.get(`/products?locationId=${location.id}`)
             .then(res => {
-                setProducts(res.data);
+                dispatch({type:'SET_PRODUCTS',payload: res.data});
                 setLoading(false);
             })
             .catch(err => dispatch({type:'SET_ERROR', payload:err}));
 
-    },[])
+    },[state.didChange])
     if (loading) return <div>Loading...</div>
     const {logo_url, colors} = location.metadata.branding;
+    const {products} = state;
+
     return(
 
         <div className={"text-center"}>

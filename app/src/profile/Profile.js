@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {useAuth0} from "@auth0/auth0-react";
 import {Menu, MenuItem, SubMenu} from "react-pro-sidebar";
 import {Link} from "react-router-dom";
@@ -10,6 +10,7 @@ import locations from "../configuration/locations";
 import currency from "../configuration/currency";
 import translations from "../configuration/translations";
 import {CoreApi} from "../services/ApiService";
+import {Context} from "../configuration/Store";
 
 export const ProfileRoutes = [
     {
@@ -133,7 +134,6 @@ function Settings() {
     let themeMenu = Object.keys(themes);
     let locMenu = Object.keys(locations);
     let currencyMenu = Object.keys(currency);
-
 
     return (
         <div>

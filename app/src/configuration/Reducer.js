@@ -7,6 +7,11 @@ const Reducer =(state, action) =>{
                 ...state,
                 location: action.payload
             };
+        case 'SET_PRODUCTS':
+            return {
+                ...state,
+                products: action.payload
+            }
         case 'SET_THEME':
             return{
                 ...state,
@@ -28,7 +33,11 @@ const Reducer =(state, action) =>{
                 ...state,
                 locale: action.payload
             };
-
+        case 'SET_CHANGE':
+            return {
+                ...state,
+                didChange: action.payload
+            };
         default:
             return state;
     }

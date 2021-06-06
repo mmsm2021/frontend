@@ -3,11 +3,13 @@ import React, {useContext, useEffect, useState} from "react";
 import {Menu,MenuItem, SubMenu} from "react-pro-sidebar";
 import {FaList, FaMinus, FaPlus} from "react-icons/all";
 import {Link} from "react-router-dom";
-import {Accordion, Button, Card, CardDeck, CardGroup, Form, ListGroup, Modal} from "react-bootstrap";
+import {Accordion, Button, Card, CardDeck, CardGroup, Form, ListGroup, Modal, Row} from "react-bootstrap";
 import fakeProducts from "./productsJson.json";
 import {ProductForm} from "./ProductForm";
 import {api} from "../services/ApiService";
 import ProductCard from "./ProductCard";
+import {Context} from "../configuration/Store";
+import {map} from "react-bootstrap/ElementChildren";
 
 
 export const ProductRoutes = [
@@ -29,6 +31,56 @@ export const ProductRoutes = [
     }
 
 ]
+export const ProductMenu = () => {
+    return (
+        <Menu iconShape={"circle"}>
+            <SubMenu title={<FormattedMessage id={"products"}/>}
+                     icon={<FaList/>}>
+                {ProductRoutes.map((route, index) => {
+                    if (!route.sidebar) return null;
+                    return(
+                        <MenuItem key={index}>
+                            <Link to={route.path}>{route.sidebar}</Link>
+                        </MenuItem>
+                    )
+                })}
+
+            </SubMenu>
+        </Menu>
+    )
+}
+export const ProductsFromState = ({addToCart}) =>{
+    const [state,dispatch] = useContext(Context);
+    const {products} = state;
+    return(
+        <div>
+            <Accordion defaultActiveKey={0}>
+        {products.map((product,index)=>{
+
+            return(
+                <Card>
+                    <Accordion.Toggle as={Card.Header} eventKey={product.id}>
+                        {product.name}
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={product.id}>
+                        <Card.Body>
+                            <Row>
+                                {product.description}
+                            </Row>
+                            <Row className={'d-inline-flex'}>
+                                <Button className={'btn-sm'} variant={"outline-primary"}
+                                    onClick={() => addToCart(product.id)}><FormattedMessage id={"addToCart"}/></Button>
+                            </Row>
+                            </Card.Body>
+                    </Accordion.Collapse>
+                </Card>
+            )
+        })}
+            </Accordion>
+
+        </div>
+    )
+}
 export const SimpleProductList = (props) =>{
     const {product} = props;
     return(
@@ -84,22 +136,7 @@ export function ProductPopup(props) {
     );
 }
 
-export const Products = () => {
-    return (
-            <Menu iconShape={"circle"}>
-                <SubMenu title={<FormattedMessage id={"products"}/>}
-                         icon={<FaList/>}>
-                    {ProductRoutes.map((route, index) => (
 
-                        <MenuItem key={index}>
-                            <Link to={route.path}>{route.sidebar}</Link>
-                        </MenuItem>
-                    ))}
-
-                </SubMenu>
-            </Menu>
-    )
-}
 
 export const ProductOverview = () =>{
     const [products, setProducts] = useState([]);

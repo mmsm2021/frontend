@@ -3,7 +3,7 @@ import {Menu, MenuItem, ProSidebar, SidebarContent, SidebarFooter, SidebarHeader
 import React, {useContext, useState} from "react";
 import {OrderMenu} from "./orders/Orders";
 import {Profile} from "./profile/Profile";
-import {Products} from "./products/Products";
+import {ProductMenu} from "./products/Products";
 import fd_logo from "./fd_logo.svg"
 import bg1 from "./bg1.jpg";
 
@@ -35,6 +35,7 @@ export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSideba
                     toggled={toggled}
                     onToggle={handleToggleSidebar}>
             <SidebarHeader>
+
                 <div style={{
                     padding: '24px',
                     textTransform: 'uppercase',
@@ -49,6 +50,7 @@ export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSideba
                     <LocationSelect noButton/>
                 <Image src={logo_url} thumbnail />
                     <h4>{state.location.name}</h4>
+
                 </div>
             </SidebarHeader>
             <SidebarContent >
@@ -64,7 +66,7 @@ export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSideba
 
                         <OrderMenu/>
 
-                        <Products/>
+                        <ProductMenu/>
 
                         <Booking/>
 
