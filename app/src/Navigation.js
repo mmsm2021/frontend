@@ -23,17 +23,21 @@ export const AuthAction = () => {
     if (!isAuthenticated) {
         return <LoginButton/>
     } else {
-        getIdTokenClaims()
-            .then(res => {
-                if (state.user === null && user !== null) {
-                    dispatch({type: 'SET_USER', payload: user});
-                }
-                if (res !== null && typeof res === 'object' && typeof res.__raw === 'string') {
-                    dispatch({type: 'SET_TOKEN', payload: res.__raw});
-                }
-            }).catch(
+        if (state.token === null) {
+            getIdTokenClaims()
+                .then(res => {
+                    if (state.user === null && user !== null) {
+                        console.log(user)
+                        dispatch({type: 'SET_USER', payload: user});
+                    }
+                    if (res !== null && typeof res === 'object' && typeof res.__raw === 'string') {
+                        console.log(res.__raw)
+                        dispatch({type: 'SET_TOKEN', payload: res.__raw});
+                    }
+                }).catch(
                 err => console.log(err.message)
             );
+        }
         return <LogoutButton/>
     }
 };

@@ -21,10 +21,10 @@ const columns = [
         valueFormatter: (params) => {
             switch (params.value){
                 case 0:
-                    return <FormattedMessage id={"queue"}/>;
+                    return `Queue`;
                     break;
                 case 1:
-                    return <FormattedMessage id={"inProgress"}/>;
+                    return `In Progess`;
                     break;
                 case 2:
                     return <FormattedMessage id={"finished"}/>;
@@ -121,7 +121,7 @@ class OrderTable extends React.Component{
         if (error) return <Alerter message={error.message} type={"error"} title={`Code: ${error.code}`}/>;
         return (
             <div style={{ width: '100%' }}>
-                <h1><FormattedMessage id={"yourOrders"}/></h1>
+
                 <div style={{display:'flex',flexGrow:1}}>
                 <DataGrid rows={data.orders}
                           columns={columns}

@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react";
 import {Context} from "./configuration/Store";
-import {api, AuthApi, CoreApi} from "./services/ApiService";
+import {api, AuthApi, CoreApi, TestApi} from "./services/ApiService";
 import {Col, ListGroup, Row, Tab, Tabs} from "react-bootstrap";
 import {ProductCategories, ProductDetail, SimpleProductList} from "./products/Products";
 import {useAuth0} from "@auth0/auth0-react";
@@ -12,16 +12,27 @@ export const Home = () => {
     const [key, setKey] = useState('home');
     useEffect(async ()=>{
         // Get default location
-        await CoreApi.get(`/locations/${state.location.id}`)
-            .then(res => {
+        console.log('Getting location')
+        await TestApi(state.token)
+            .get(`/locations/${state.location.id}`)
+            .then(res =>{
                 const locationData = res.data;
+                console.log(res);
                 localStorage.setItem('locId', locationData.id);
                 dispatch({type:'SET_LOCATION', payload:locationData});
-            })
-            .catch(err => console.log(err))
+            }).catch(err => console.log(err))
             .finally(() => console.log(location));
+        // await CoreApi.get(`/locations/${state.location.id}`)
+        //     .then(res => {
+        //         const locationData = res.data;
+        //         console.log(res);
+        //         localStorage.setItem('locId', locationData.id);
+        //         dispatch({type:'SET_LOCATION', payload:locationData});
+        //     })
+        //     .catch(err => console.log(err))
+        //     .finally(() => console.log(location));
         // Get location products
-        await api.get(`/products?locationId=${location.id}`)
+        await TestApi(state.token).get(`/products?locationId=${location.id}`)
             .then(res => {
                 dispatch({type:'SET_PRODUCTS',payload: res.data});
                 dispatch({type:'SET_CHANGED',payload: !state.didChange});

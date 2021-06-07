@@ -130,6 +130,7 @@ export class OrderDetails extends React.Component{
         const order = this.state.order.orders;
         const {customer} = this.state;
         if (order){
+
             let ordered = new Date(order.orderDate).toString();
             const {customer} = this.state;
             return(
