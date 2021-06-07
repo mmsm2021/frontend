@@ -57,6 +57,7 @@ export const ProductForm = () => {
 
                 values.attributes.ingredients = values.ingredients;
                 values.attributes.approach = values.approach;
+                values.status = parseInt(values.status);
                 // Delete temporary object properties
                 delete values.ingredients;
                 delete values.approach;
@@ -134,7 +135,7 @@ export const ProductForm = () => {
                                     type="select"
                                     placeholder="Status"
                                     name="status"
-                                    value={values.status}
+                                    value={Number(values.status)}
                                     onChange={handleChange}
                                     isInvalid={!!errors.status}>
                                     <option value={1}>Active</option>

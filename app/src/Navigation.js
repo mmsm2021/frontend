@@ -23,10 +23,10 @@ export const AuthAction = () => {
     if (!isAuthenticated) {
         return <LoginButton/>
     } else {
-        if (state.token === null) {
+        if (state.token === null || state.user === null) {
             getIdTokenClaims()
                 .then(res => {
-                    if (state.user === null && user !== null) {
+                    if (state.user === null && user !== null ) {
                         console.log(user)
                         dispatch({type: 'SET_USER', payload: user});
                     }

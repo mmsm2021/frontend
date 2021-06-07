@@ -39,6 +39,7 @@ const Reducer =(state, action) =>{
                 didChange: action.payload
             };
         case 'SET_TOKEN':
+            localStorage.setItem('token', action.payload);
             return {
                 ...state,
                 token: action.payload

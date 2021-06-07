@@ -43,7 +43,7 @@ export class OrderDetails extends React.Component{
     getOrder = async () => {
         try{
             let {id} = this.props;
-            await api.get(`/orders/${id}`).
+            await api(localStorage.getItem('token')).get(`/orders/${id}`).
                 then(response => response.data)
                 .then(data => {
                     this.setState({order: data});
@@ -113,7 +113,7 @@ export class OrderDetails extends React.Component{
         console.clear();
         try{
             let {id} = this.props;
-            api.get(`/orders/${id}`).
+            api(localStorage.getItem('token')).get(`/orders/${id}`).
             then(response => response.data)
                 .then(data => {
                     this.setState({order: data});

@@ -55,8 +55,8 @@ export const UserOrder = () =>{
     const [state,dispatch] = useContext(Context);
     const [oId, setOid] = useState('');
     const [success,setSuccess] = useState(false);
-    useEffect(()=>{
-        api.get("/products").then(res => setProducts(res.data))
+    useEffect(async ()=>{
+        await api(state.token).get("/products").then(res => setProducts(res.data))
             .catch(err => console.log(err));
 
 
@@ -65,7 +65,7 @@ export const UserOrder = () =>{
     },[])
     async function addToCart(id){
         console.log(id);
-        await api(`/products/quote/${id}`)
+        await api(state.token).get(`/products/quote/${id}`)
             .then(res => setCart((prev) =>[...prev,res.data]))
             .catch(err => dispatch({type:'SET_ERROR', payload:err}));
         console.log(cart);
@@ -82,7 +82,7 @@ export const UserOrder = () =>{
             item.token
         ));
 
-        await OrderApi.post('', order)
+        await api(state.token).post('/orders', order)
             .then(res =>{
                 console.log(res.data);
                 setOid(res.data.orderId)

@@ -19,7 +19,7 @@ const initialState ={
     user: null,
     error: null,
     didChange: false,
-    token: null
+    token: localStorage.getItem('token')
 };
 const Store = ({children})=>{
     const [state, dispatch] = useReducer(Reducer, initialState);

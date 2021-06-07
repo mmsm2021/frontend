@@ -93,7 +93,7 @@ export const LocationDetail = (props) =>{
             .then(res => {
                 setLocation(res.data);
                 setLoading(false);
-            }).then( () => api.get(`/products?location=${state.location.id}`)
+            }).then( () => api(state.token).get(`/products?location=${state.location.id}`)
                                 .then( res => dispatch({type:'SET_PRODUCTS', payload:res.data}))
                                 .catch(err => dispatch({type:'SET_ERROR', payload:err}))
         )

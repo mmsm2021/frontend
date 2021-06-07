@@ -1,6 +1,8 @@
 import {useContext, useEffect, useState} from "react";
 import {Context} from "../configuration/Store";
 import {TestApi} from "../services/ApiService";
+import {Formik} from "formik";
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export const OrderDetail = (id) =>{
     const [state,dispatch] = useContext(Context);
@@ -12,6 +14,11 @@ export const OrderDetail = (id) =>{
     },[]);
     console.log(init);
     return(
-        <p>{init.length}</p>
+        <Formik initialValues={init}
+                onSubmit={async (values) =>{
+                sleep(300).then( prom =>{
+
+                    })
+        }}/>
     )
 }

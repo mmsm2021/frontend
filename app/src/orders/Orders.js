@@ -12,7 +12,7 @@ import {UserOrder} from "./UserOrder";
 import {ProductOverview} from "../products/Products";
 import {Context} from "../configuration/Store";
 import {Form, Col, ListGroup} from "react-bootstrap";
-import {api} from "../services/ApiService";
+import {api, TestApi} from "../services/ApiService";
 import OrderForm from "./OrderForm";
 import {inOneOfRole} from "../Auth";
 
@@ -82,14 +82,34 @@ export const OrderMenu = () =>{
     )
 }
 
+const OrderGrid =(which, id)=>{
+    const [state,dispatch] = useContext(Context);
+    const [orders, setOrders] = useState([]);
+    useEffect(async ()=>{
+        console.log(which, id)
+           await api(state.token).get(`/orders/user/${id}`)
+                .then(res => setOrders(res.data))
+                .catch(err => dispatch({type:'SET_ERROR', payload:err}));
 
+
+    },[]);
+    return(
+        <ol>
+            {orders.map((order)=>(
+                <li key={order.orderId}>{order.orderId}</li>
+            ))}
+        </ol>
+    )
+}
 const Active = () => {
 const [state] = useContext(Context);
 const roles = state.user["https://frandine.randomphp.com/roles"];
 console.log(roles)
     if (roles[0] === "Customer"){
         console.clear();
-        return <OrderTable which={"user"} id={state.user.sub}/>
+        return <OrderTable which={"user"} id={state.user.sub}
+        branding={{primary: state.location.metadata.branding.colors.primary,
+        background: state.location.metadata.branding.colors.page_background}}/>
     }
     return (
 
@@ -130,7 +150,7 @@ export const Create = () =>{
 
     useEffect(async () =>{
 
-            await api.get(`/products?locationId=${state.location.id}`)
+            await api(localStorage.getItem('token')).get(`/products?locationId=${state.location.id}`)
                 .then(res => {
                     setProducts(res.data);
                     setLoading(false);

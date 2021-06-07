@@ -94,12 +94,12 @@ class OrderTable extends React.Component{
         console.log(which, id)
         if (which === 'user'){
 
-            api.get(`/orders/user/${id}`)
+            api(localStorage.getItem('token')).get(`/orders/user/${id}`)
                 .then(res => this.setState({data: res.data, isLoading:false}))
                 .catch(err => this.setState({status:err.message}));
 
         } else {
-            api.get(`/orders/${this.props.id}/last/100`)
+            api(localStorage.getItem('token')).get(`/orders/${this.props.id}/last/100`)
                 .then(res => {
                     console.log(res);
                     this.setState({data: res.data, isLoading: false});
@@ -112,6 +112,7 @@ class OrderTable extends React.Component{
     }
     render() {
         const {user} = this.props.auth0;
+        const {branding} = this.props;
         const {data, status, isLoading,error} = this.state;
         if (status && !this.props.useMockdata) {
             console.log(status);
