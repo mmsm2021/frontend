@@ -13,6 +13,7 @@ import OrderTimeline from "./OrderTimeline";
 import {JWTParser} from "../services/JWTParser";
 import {Redirect} from "react-router-dom";
 import {Alerter} from "../services/AlertService";
+import {ProductCategories} from "../products/Products";
 
 const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -39,8 +40,10 @@ export const ProductGrid = ({key, product, onAdd, count}) =>(
         </Card.Body>
         <Card.Footer>
             {count}
-            <FaPlus onClick={() => count = count + 1}/>
-            <Button onClick={onAdd}><FormattedMessage id={"addToCart"}/></Button>
+
+            <Button onClick={onAdd} variant={"outline-primary"} sm>
+                <FormattedMessage id={"addToCart"}/>
+            </Button>
         </Card.Footer>
     </Card>
 )
@@ -50,6 +53,8 @@ export const UserOrder = () =>{
     const [products, setProducts] = useState([]);
     const [quote, setQuote] = useState([]);
     const [state,dispatch] = useContext(Context);
+    const [oId, setOid] = useState('');
+    const [success,setSuccess] = useState(false);
     useEffect(()=>{
         api.get("/products").then(res => setProducts(res.data))
             .catch(err => console.log(err));
@@ -69,7 +74,7 @@ export const UserOrder = () =>{
         let tokens = [];
         let order={
             location: state.location.name,
-
+            customer: state.user.sub,
             discount:10,
         };
 
@@ -77,104 +82,54 @@ export const UserOrder = () =>{
             item.token
         ));
 
-        let response = await OrderApi.post('', order)
-            .then(res => res.data)
+        await OrderApi.post('', order)
+            .then(res =>{
+                console.log(res.data);
+                setOid(res.data.orderId)
+            } )
             .catch(err => console.log(err));
 
-        return <Alerter type={'success'} message={`Order submitted! Order ID: ${response.orderId}`}/>
+
     }
+    let total = 0;
+
     return(
-        <Tab.Container id="list-group-tabs" defaultActiveKey="#breakfast">
+        <Tab.Container id="list-group-tabs" defaultActiveKey="#breakfast" >
             <Row>
-                <Col md={6}>
-                    <ListGroup className={"shadow-sm sticky-top"}>
-                        <ListGroup.Item action href="#breakfast">
-                            <FormattedMessage id={"breakfast"}/>
-                        </ListGroup.Item>
-                        <ListGroup.Item action href="#lunch">
-                            <FormattedMessage id={"lunch"}/>
-                        </ListGroup.Item>
-                        <ListGroup.Item action href="#dinner">
-                            <FormattedMessage id={"dinner"}/>
-                        </ListGroup.Item>
-                        <ListGroup.Item action href="#dessert">
-                            <FormattedMessage id={"dessert"}/>
-                        </ListGroup.Item>
-                        <ListGroup.Item action href="#beverages">
-                            <FormattedMessage id={"beverages"}/>
-                        </ListGroup.Item>
+                <Col sm={4} >
+                    <ListGroup className={"shadow-sm "}>
+                        {ProductCategories.map((cat) =>(
+                            <ListGroup.Item action href={`#${cat.category}`}>
+                                <FormattedMessage id={`${cat.category.toLowerCase()}`}/>
+                            </ListGroup.Item>
+                        ))}
                         <ListGroup.Item action href={"#cart"}>
                             <CartIcon count={cart.length}/>
                         </ListGroup.Item>
                     </ListGroup>
                 </Col>
 
-                <Col sm={5}>
+                <Col >
 
                     <Tab.Content>
-                        <Tab.Pane eventKey="#breakfast">
-                            <h1>Breakfast</h1>
-                            {products.map((prod, index) =>(
-                                <ProductGrid key={index}
-                                             product={prod}
-                                             onAdd={() => addToCart(prod.id)}/>
-
-                            ))}
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="#lunch">
-                            <h1>Lunch</h1>
-                            {products.map((prod, index) =>(
-                                <ProductGrid key={index}
-                                             product={prod}
-                                             onAdd={() => {
-                                                 setCart((prev) =>[...prev, prod]);
-                                             }
-                                             }/>
-
-                            ))}
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="#dinner">
-                            <h1>Dinner</h1>
-                            {products.map((prod, index) =>{
-                                if (prod.attributes.category === 3){
+                        {ProductCategories.map((cat, index) =>(
+                            <Tab.Pane eventKey={`#${cat.category}`} >
+                                <h1>{cat.category}</h1>
+                                {products.map((prod, index) =>{
+                                    if (prod.attributes.category === cat.id)
                                     return(
                                         <ProductGrid key={index}
                                                      product={prod}
-                                                     onAdd={() => {
-                                                         setCart((prev) =>[...prev, prod]);
-                                                     }
-                                                     }/>
+                                                     onAdd={() => addToCart(prod.id)}/>
+
                                     )
-                                }
-                            })}
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="#dessert">
-                            <h1>Dessert</h1>
-                            {products.map((prod, index) =>(
-                                <ProductGrid key={index}
-                                             product={prod}
-                                             onAdd={() => {
-                                                 setCart((prev) =>[...prev, prod]);
-                                             }
-                                             }/>
+                                })}
+                            </Tab.Pane>
+                        ) )}
 
-                            ))}
-                        </Tab.Pane>
-                        <Tab.Pane eventKey="#beverages">
-                            <h1>Beverages</h1>
-                            {products.map((prod, index) =>(
-                                <ProductGrid key={index}
-                                             product={prod}
-                                             onAdd={() => {
-                                                 setCart((prev) =>[...prev, prod]);
-                                             }
-                                             }/>
-
-                            ))}
-                        </Tab.Pane>
-                        <Tab.Pane eventKey={"#cart"}>
+                        <Tab.Pane eventKey={"#cart"} className={"jumbotron"}>
                             <h1>Cart</h1>
-                            <Table striped bordered hover size="sm">
+                            <Table striped bordered hover size="sm" >
                                 <thead>
                                     <tr>
                                         <th>Item</th>
@@ -184,13 +139,16 @@ export const UserOrder = () =>{
                                 <tbody>
                                 {cart[0] && cart.map((cartItem, index)=> {
                                     // let toke = handleAddToCart(cartItem.id);
-
-
                                     let item = cartItem;
+                                    let info = JWTParser(item.token);
+                                    total = total + parseInt(item.price);
+                                    console.log(info)
                                     return(
                                         <tr key={index} >
-                                            <td>{item.name}</td>
-                                            <td>{item.price}</td>
+                                            <td>
+                                                {info ? info.product.name : item.name}
+                                            </td>
+                                            <td>{info ? info.product.price : item.price}</td>
                                             <td>
 
 
@@ -207,6 +165,11 @@ export const UserOrder = () =>{
                                         </tr>
                                     )})}
                                 </tbody>
+                                <footer>
+                                    <span>
+                                        <FormattedMessage id={"Total"}/> {total}
+                                    </span>
+                                </footer>
                             </Table>
                             <Button variant={"outline-primary btn-block"}
                             onClick={() => postOrder()}>
@@ -216,7 +179,7 @@ export const UserOrder = () =>{
                     </Tab.Content>
                 </Col>
             </Row>
-
+            {oId ? <Redirect to={`/orders/${oId}`}/> : ''}
         </Tab.Container>
     )
 }

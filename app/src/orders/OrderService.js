@@ -34,6 +34,7 @@ export class OrderDetails extends React.Component{
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
         if (this.props.order){
             this.setState({order: this.props.order});
         }
@@ -70,10 +71,11 @@ export class OrderDetails extends React.Component{
             );
         }
     }
-    getCustomer = (id) =>{
+    getCustomer = async (id) =>{
         if (id === null) return;
+        if (this.state.customer) return;
         const encodedId = encodeURIComponent(id);
-        AuthApi.get(`/users/${encodedId}`)
+        await AuthApi.get(`/users/${encodedId}`)
             .then(response => this.setState({customer: response.data}))
             .catch(error => console.log(error.message));
     }
@@ -87,6 +89,10 @@ export class OrderDetails extends React.Component{
         event.preventDefault();
         alert(JSON.stringify(event.target.value, null, 2))
         // OrderApi.patch(`/${}`)
+    }
+    handleSelect(event){
+        event.preventDefault();
+        alert(JSON.stringify(event.target.value,null,2))
     }
     handleDelivered(order){
         let deliveries = {
@@ -111,6 +117,7 @@ export class OrderDetails extends React.Component{
             then(response => response.data)
                 .then(data => {
                     this.setState({order: data});
+                    console.log(data);
                 });
         } catch (e){
             console.log(e);
@@ -123,12 +130,11 @@ export class OrderDetails extends React.Component{
         const order = this.state.order.orders;
         const {customer} = this.state;
         if (order){
-                this.getCustomer(order.customer);
             let ordered = new Date(order.orderDate).toString();
             const {customer} = this.state;
             return(
                 <>
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form noValidate onSubmit={this.handleSubmit}>
                         <Form.Row>
                             <Form.Group as={Col} controlId="formGridId">
                                 <Form.Label>
@@ -177,7 +183,8 @@ export class OrderDetails extends React.Component{
                             />
                            <ProductPopup show={this.state.modalShow}
                                          onHide={()=>this.setState({modalShow: false})}
-                                        onSubmit={() => this.handleSubmit()}/>
+                                        onSubmit={() => this.handleSubmit()}
+                                        onSelect={() => this.handleSelect}/>
                             <Form.Text>Total: {order.total}</Form.Text>
                         </Form.Group>
                         <Button variant="primary" type="submit">

@@ -15,6 +15,7 @@ export const Home = () => {
         await CoreApi.get(`/locations/${state.location.id}`)
             .then(res => {
                 const locationData = res.data;
+                localStorage.setItem('locId', locationData.id);
                 dispatch({type:'SET_LOCATION', payload:locationData});
             })
             .catch(err => console.log(err))
@@ -23,6 +24,7 @@ export const Home = () => {
         await api.get(`/products?locationId=${location.id}`)
             .then(res => {
                 dispatch({type:'SET_PRODUCTS',payload: res.data});
+                dispatch({type:'SET_CHANGED',payload: !state.didChange});
                 setLoading(false);
             })
             .catch(err => dispatch({type:'SET_ERROR', payload:err}));

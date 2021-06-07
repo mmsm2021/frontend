@@ -31,6 +31,7 @@ export const ProductForm = () => {
     const [product, setProduct] = useState({});
     const [state, dispatch] = useContext(Context);
     const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
     let { id } = useParams();
     let prodIng = [];
     let prodApp = [];
@@ -46,6 +47,7 @@ export const ProductForm = () => {
                 .catch(err => console.log(err)).finally(() => setLoading(false));
         }
     },[id]);
+    console.log(state.location.id)
     if(loading) return <Alerter type={'success'} message={"Loading..."}/>;
 
     return(
@@ -64,7 +66,8 @@ export const ProductForm = () => {
                 api.post("/products", values)
                     .then(res => {
                         if (res.status === 200){
-                            return <Alerter type={'success'} message={JSON.stringify(res,null,2)}/>
+                            setSuccess(true);
+                            console.log(res.data)
                         }else {
                             alert(JSON.stringify(res,null,2));
                         }
@@ -77,7 +80,7 @@ export const ProductForm = () => {
                     name: product.name,
                     locationId: state.location.id,
                     price: product.price,
-                    status: product.status,
+                    status: 0,
                     attributes: {
                         ingredients:[],
                         approach:[],
@@ -89,8 +92,8 @@ export const ProductForm = () => {
                     discountTo: null,
                     description: product.description,
                     uniqueIdentifier: '',
-                    ingredients: prodIng,
-                    approach: prodApp,
+                    ingredients: [],
+                    approach: [],
 
                 }
             }>
@@ -278,7 +281,7 @@ export const ProductForm = () => {
                             <Button type={"submit"}><FormattedMessage id={'createProduct'}/></Button>
                         )}
                         <Button type={"reset"} variant={"danger"}>Reset</Button>
-
+                        {success ? <Redirect to={"/products"}/> : ''}
                     </Fmik>
                 </>
             )}</Formik>

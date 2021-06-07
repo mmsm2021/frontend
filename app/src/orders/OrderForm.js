@@ -79,9 +79,7 @@ const Wizard = ({ children, initialValues, onSubmit }) => {
 };
 
 const WizardStep = ({ children }) => children;
-function RedirectToOrder(id){
-    return <OrderDetails/>
-}
+
 const OrderForm = () => {
     const[state, dispatch] = useContext(Context);
     const[items, setItems] = useState([]);
@@ -89,7 +87,7 @@ const OrderForm = () => {
     const addToCart = async (id) =>{
         const response = await api.get(`/products/quote/${id}`).
             then(res => res.data)
-            .catch(err=>console.log(err));
+            .catch(err=> dispatch({type:'SET_ERROR', payload: err}));
         setItems((prev) =>[...prev, response.token]);
 
     };
@@ -159,7 +157,7 @@ const OrderForm = () => {
                             type="text"
                         />
                         <ErrorMessage className="error" component="div" name="customer"/>
-                        {oId ? (<button type={'button'}><Link to={`/orders/${oId}`}>View order</Link></button> ) : ''}
+                        {oId ? <Redirect to={`/orders/${oId}`} /> : ''}
                     </div>
                 </WizardStep>
             </Wizard>

@@ -3,13 +3,17 @@ import React, {useContext, useEffect, useState} from "react";
 import {Menu,MenuItem, SubMenu} from "react-pro-sidebar";
 import {FaList, FaMinus, FaPlus} from "react-icons/all";
 import {Link} from "react-router-dom";
-import {Accordion, Button, Card, CardDeck, CardGroup, Form, ListGroup, Modal, Row} from "react-bootstrap";
+import {Accordion, Button, Card, CardDeck, CardGroup, Form, ListGroup, Modal, Row, Tab} from "react-bootstrap";
 import fakeProducts from "./productsJson.json";
 import {ProductForm} from "./ProductForm";
 import {api} from "../services/ApiService";
 import ProductCard from "./ProductCard";
 import {Context} from "../configuration/Store";
 import {map} from "react-bootstrap/ElementChildren";
+import {Autocomplete} from "@material-ui/lab";
+import {TextField} from "@material-ui/core";
+import {DataGrid} from "@material-ui/data-grid";
+import {ProductGrid} from "../orders/UserOrder";
 
 
 export const ProductRoutes = [
@@ -54,6 +58,7 @@ export const ProductsFromState = ({addToCart}) =>{
     const {products} = state;
     return(
         <div>
+
             <Accordion defaultActiveKey={0}>
         {products.map((product,index)=>{
 
@@ -107,7 +112,12 @@ export const ProductDetail = (props) =>{
     )
 };
 export function ProductPopup(props) {
-    return (
+    const [state,dispatch] = useContext(Context);
+
+    const {products} = state;
+    const {orderItems} = state;
+    return(
+        products[0]&&
         <Modal
             {...props}
             size="lg"
@@ -122,11 +132,11 @@ export function ProductPopup(props) {
             <Modal.Body>
                 <h4>Choose items from list</h4>
                 <Form.Group>
-                    <Form.Control type="text" placeholder="Search" value={props.name}/>
-                    <Form.Control as="select">
-                        <option>Default select</option>
-
-                    </Form.Control>
+                    <Autocomplete id={"name"}
+                                  options={products}
+                                  getOptionLabel={(option) => option.name}
+                                  getOptionSelected={props.handleSelect}
+                                  renderInput={(params) => <TextField {...params} label={<FormattedMessage id={'products'}/>} variant="outlined" />}/>
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer>
@@ -143,6 +153,7 @@ export const ProductOverview = () =>{
     const [modalShow, setModalShow] = useState(false);
     const [clickedProduct, setClickedProduct] = useState();
     const [quant, setQuant] = useState(1);
+    const [state,dispatch] = useContext(Context);
     const handleIncrement =()=>{
         setQuant(quant + 1);
     }
@@ -150,20 +161,28 @@ export const ProductOverview = () =>{
         setQuant(quant - 1);
     }
     useEffect(()=>{
-        api.get(`/products`).
-            then(res => setProducts(res.data))
-            .catch(err => console.log(err));
+        setProducts(state.products);
 
-    },[])
+    },[state.didChange])
     return(
         <>
             <h2><FormattedMessage id={"productOverview"}/></h2>
-            {products.map((product) =>(
-                <ProductCard product={product}
-                         show={() => setModalShow(true)}/>
-                )
 
-            )}
+                {ProductCategories.map((cat, index) =>(
+                    <div>
+                        <h1>{cat.category}</h1>
+                        {state.products.map((prod, index) =>{
+                            if (prod.attributes.category === cat.id)
+                                return(
+                                    <ProductGrid key={index}
+                                                 product={prod}
+                                                 />
+
+                                )
+                        })}
+                    </div>
+
+                ) )}
 
             <ProductPopup show={modalShow}
                           extProduct={clickedProduct}

@@ -11,6 +11,7 @@ import currency from "../configuration/currency";
 import translations from "../configuration/translations";
 import {CoreApi} from "../services/ApiService";
 import {Context} from "../configuration/Store";
+import {LocationSelect} from "../location/Location";
 
 export const ProfileRoutes = [
     {
@@ -129,6 +130,7 @@ function Overview(props) {
 
 function Settings() {
     const {user} = useAuth0();
+    const [state,dispatch] = useContext(Context)
     const [userMetadata] = useState(user['https://frandine.randomphp.com/user_metadata']);
     let langMenu = Object.keys(translations);
     let themeMenu = Object.keys(themes);
@@ -170,15 +172,15 @@ function Settings() {
 
                     <Form.Row>
                         <Form.Group as={Col} controlId="locationSelect">
-                            <Form.Label><FormattedMessage id={"location"}/></Form.Label>
-                            <Form.Control as="select" defaultValue={userMetadata['location']}>
-                                {
-                                    locMenu.map((key) => {
-                                            return <option value={key}>{locations[key]}</option>
-                                        }
-                                    )
-                                }
-                            </Form.Control>
+                            <LocationSelect noButton/>
+                            {/*<Form.Control as="select" defaultValue={userMetadata['location']}>*/}
+                            {/*    {*/}
+                            {/*        locMenu.map((key) => {*/}
+                            {/*                return <option value={key}>{locations[key]}</option>*/}
+                            {/*            }*/}
+                            {/*        )*/}
+                            {/*    }*/}
+                            {/*</Form.Control>*/}
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="currencySelect">

@@ -20,7 +20,7 @@ export const OrderRoutes =
         {
             path: "/orders",
             exact: true,
-            sidebar: <FormattedMessage id={"orderPlural"}/>,
+            // sidebar: <FormattedMessage id={"orderPlural"}/>,
             main: () => <h2>Overview</h2>,
         },
         {
@@ -70,6 +70,12 @@ export const OrderMenu = () =>{
 
 const Active = () => {
 const [state] = useContext(Context);
+const roles = state.user["https://frandine.randomphp.com/roles"];
+console.log(roles)
+    if (roles[0] === "Customer"){
+        console.clear();
+        return <OrderTable which={"user"} id={state.user.sub}/>
+    }
     return (
 
         <div>

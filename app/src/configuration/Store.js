@@ -2,9 +2,18 @@ import React, {createContext, useReducer} from "react";
 import Reducer from "./Reducer";
 
 const initialState ={
-    locale: 'en',
+    locale: 'da',
     location:{
-        id: 'a2aa3ad2-9000-492b-ab52-458d745583e3' // Default location
+        id: localStorage.getItem('locId'), // Default location
+        metadata: {
+            branding:{
+                logo_url:'',
+                colors:{
+                    primary:'',
+                    page_background:''
+                }
+            }
+        }
     },
     theme:'light',
     user:null,
@@ -14,6 +23,8 @@ const initialState ={
 };
 const Store = ({children})=>{
     const [state, dispatch] = useReducer(Reducer, initialState);
+    console.log(localStorage.getItem('locId'));
+    console.log(localStorage.getItem('bearer'));
     return(
         <Context.Provider value={[state, dispatch]}>
             {children}

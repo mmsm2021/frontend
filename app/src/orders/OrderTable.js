@@ -7,6 +7,7 @@ import {api, testToken} from "../services/ApiService";
 import {Alerter} from "../services/AlertService";
 import {DataGrid, GridToolbar} from "@material-ui/data-grid";
 import {withAuth0} from "@auth0/auth0-react";
+import {FormattedMessage} from "react-intl";
 
 const columns = [
 
@@ -74,15 +75,25 @@ class OrderTable extends React.Component{
     }
 
     getOrders(){
-        api.get(`/orders/${this.props.id}/last/100`)
-            .then(res =>{
-            console.log(res);
-            this.setState({data: res.data, isLoading: false});
-        })
-            .catch(err => {
-                console.log(err.message);
-                this.setState({status: err.message})
-            });
+        const {which, id} = this.props;
+        console.log(which, id)
+        if (which === 'user'){
+
+            api.get(`/orders/user/${id}`)
+                .then(res => this.setState({data: res.data, isLoading:false}))
+                .catch(err => this.setState({status:err.message}));
+
+        } else {
+            api.get(`/orders/${this.props.id}/last/100`)
+                .then(res => {
+                    console.log(res);
+                    this.setState({data: res.data, isLoading: false});
+                })
+                .catch(err => {
+                    console.log(err.message);
+                    this.setState({status: err.message})
+                });
+        }
     }
     render() {
         const {user} = this.props.auth0;
@@ -94,18 +105,22 @@ class OrderTable extends React.Component{
         if (isLoading) return <Alerter message={"Loading data..."} type={"success"}/>;
         if (error) return <Alerter message={error.message} type={"error"} title={`Code: ${error.code}`}/>;
         return (
-            <div style={{ height: 800, width: '100%' }}>
+            <div style={{ width: '100%' }}>
+                <h1><FormattedMessage id={"yourOrders"}/></h1>
+                <div style={{display:'flex',flexGrow:1}}>
                 <DataGrid rows={data.orders}
                           columns={columns}
-                          pageSize={5}
+                          pageSize={20}
                           getRowId={(row)=> row.orderId}
                           components={
                               {
                                   Toolbar: GridToolbar
                               }
                           }
+                          autoHeight
 
                 />
+                </div>
             </div>
         );
     }

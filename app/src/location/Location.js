@@ -5,8 +5,8 @@ import {FaLocationArrow} from "react-icons/all";
 import {Container} from "@material-ui/core";
 import { Formik, ErrorMessage } from 'formik';
 import {Button, Col, Form, Image, InputGroup, Modal} from "react-bootstrap";
-import {useContext, useEffect, useState} from "react";
-import {CoreApi} from "../services/ApiService";
+import React, {useContext, useEffect, useState} from "react";
+import {api, CoreApi} from "../services/ApiService";
 import {Context} from "../configuration/Store";
 import {Alerter} from "../services/AlertService";
 export const LocationRoutes=[
@@ -60,7 +60,7 @@ export const LocationSelect = ({noButton}) =>{
                 }}>
             {({ values,handleChange,handleSubmit}) =>(
                 <Form onSubmit={handleSubmit}>
-                    <Form.Label>Location</Form.Label>
+                    <Form.Label><FormattedMessage id={"location"}/></Form.Label>
                     <Form.Control as={"select"}
                                   name={"locationId"}
                                   value={values.locationId}
@@ -70,7 +70,7 @@ export const LocationSelect = ({noButton}) =>{
                         ))}
 
                     </Form.Control>
-                    {noButton ? (<Button type={"submit"} className={"btn-sm"} block><FormattedMessage id={"switch"}/></Button> ) : (<Button type={"submit"}>Save</Button>) }
+                    {noButton ? console.log(state.location) : (<Button type={"submit"} className={"btn-sm"} block><FormattedMessage id={"switch"}/></Button> )  }
 
                 </Form>
             )}
@@ -93,7 +93,10 @@ export const LocationDetail = (props) =>{
             .then(res => {
                 setLocation(res.data);
                 setLoading(false);
-            })
+            }).then( () => api.get(`/products?location=${state.location.id}`)
+                                .then( res => dispatch({type:'SET_PRODUCTS', payload:res.data}))
+                                .catch(err => dispatch({type:'SET_ERROR', payload:err}))
+        )
             .catch(err => console.log(err));
     },[state.location]);
     if (loading){
@@ -119,6 +122,9 @@ export const LocationDetail = (props) =>{
                 zipcode: location.zipcode,
                 city: location.city,
                 country: location.country,
+                // logo_url:branding.logo_url,
+                // primary: colors.primary,
+                // page_background: colors.page_background
 
 
 
@@ -140,7 +146,9 @@ export const LocationDetail = (props) =>{
                                          isValid,
                                          errors,
                                      }) => (
-                <Form noValidate onSubmit={handleSubmit}>
+                <Form noValidate onSubmit={handleSubmit} style={{backgroundColor:values.metadata.branding.colors.page_background,
+                    color: values.metadata.branding.colors.primary
+                }}>
                     <Form.Row >
                         <h3>Location</h3>
                         <InputGroup className="mb-3">
@@ -217,18 +225,18 @@ export const LocationDetail = (props) =>{
                         <Form.Group as={Col} sm={2} controlId="metadata">
                             <Form.Label>Logo</Form.Label>
                             <Form.Control name={"logo_url"}
-                                          value={branding.logo_url}
+                                          value={values.metadata.branding.logo_url}
                                           onChange={handleChange}
                             />
                             <Image src={branding.logo_url} thumbnail/>
                             <Form.Label>Primary Color</Form.Label>
                             <Form.Control name={"primary"}
-                                          value={primary}
+                                          value={values.metadata.branding.colors.primary}
                                           onChange={handleChange}/>
-                            <div style={{height: 50, width:50, backgroundColor:primary}}></div>
+                            <div style={{height: 50, width:50, backgroundColor:values.metadata.branding.colors.primary}}></div>
                             <Form.Label>Secondary Color</Form.Label>
-                            <Form.Control name={"page_background"}
-                                          value={page_background}
+                            <Form.Control name={"metadata.branding.colors.page_background"}
+                                          value={values.metadata.branding.colors.page_background}
                                           onChange={handleChange}/>
                             <div style={{height: 50, width:50, backgroundColor:page_background}}></div>
                         </Form.Group>

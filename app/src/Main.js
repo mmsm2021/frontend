@@ -35,9 +35,13 @@ export const Main =({handleToggleSidebar, toggled}) =>{
     if (state.error){
         return <Alerter type={'error'} message={state.error.message}/>
     }
+    let {metadata} = state.location;
+    let {branding} = metadata;
+    let {colors} = branding;
+    let {primary, page_background} = colors
     return(
         routes &&
-        <main>
+        <main  style={{backgroundColor: page_background, color: primary}}>
             <Hidden only={"lg"}>
             <div className="btn-toggle" style={{ display: `${toggled ? `none` : `flex`}`}} onClick={() => handleToggleSidebar(!toggled)} >
                 <FaBars/>

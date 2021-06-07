@@ -19,7 +19,7 @@ export const Alerter = ({message, type}) =>{
     const classes = useStyles();
     const handleClose = () =>{
         setShow(false);
-        dispatch({type:'SET_ERROR', payload: null});
+        dispatch({type:'SET_ERROR', payload: false});
     }
         return(
             show &&

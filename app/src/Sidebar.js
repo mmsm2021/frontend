@@ -47,7 +47,7 @@ export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSideba
                     whiteSpace: 'nowrap',
                     textAlign: 'center'
                 }}>
-                    <LocationSelect noButton/>
+                    <LocationSelect />
                 <Image src={logo_url} thumbnail />
                     <h4>{state.location.name}</h4>
 
