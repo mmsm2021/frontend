@@ -24,9 +24,14 @@ export const AuthAction = () => {
     if (!isAuthenticated) {
         return <LoginButton/>
     } else {
-        if (!state.user) dispatch({type: 'SET_USER', payload: user});
-        getIdTokenClaims().then(res => {
-                setToken(res.__raw);
+        getIdTokenClaims()
+            .then(res => {
+                if (state.user === null && user !== null) {
+                    dispatch({type: 'SET_USER', payload: user});
+                }
+                if (res !== null && typeof res === 'object' && typeof res.__raw === 'string') {
+                    dispatch({type: 'SET_TOKEN', payload: res.__raw});
+                }
             }).catch(
                 err => console.log(err.message)
             );

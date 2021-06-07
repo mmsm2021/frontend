@@ -1,6 +1,7 @@
-import React, {useState, useEffect } from "react";
+import React, {useState, useContext, useEffect } from "react";
 import {DataGrid} from "@material-ui/data-grid";
-import {getToken} from "../configuration/Token";
+import {Context} from "../configuration/Store";
+const [state, dispatch] = useContext(Context);
 export function CustomDatatable({data}){
 
     let columns = data[0] && Object.keys(data[0]);
@@ -20,7 +21,7 @@ export function AppDT(){
     useEffect(() =>{
         fetch("https://frandine.randomphp.com/api/v1/orders/23/last/10",{
             headers:{
-                authorization: `Bearer ${getToken()}`
+                authorization: `Bearer ${state.token}`
             }
         })
             .then(response => response.json())
