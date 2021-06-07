@@ -13,7 +13,7 @@ export const Home = () => {
     useEffect(async ()=>{
         // Get default location
         console.log('Getting location')
-        await TestApi(state.token)
+        await api(state.token)
             .get(`/locations/${state.location.id}`)
             .then(res =>{
                 const locationData = res.data;
@@ -32,7 +32,7 @@ export const Home = () => {
         //     .catch(err => console.log(err))
         //     .finally(() => console.log(location));
         // Get location products
-        await TestApi(state.token).get(`/products?locationId=${location.id}`)
+        await api(state.token).get(`/products?locationId=${location.id}`)
             .then(res => {
                 dispatch({type:'SET_PRODUCTS',payload: res.data});
                 dispatch({type:'SET_CHANGED',payload: !state.didChange});

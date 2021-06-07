@@ -74,7 +74,7 @@ export const UserOrder = () =>{
         let tokens = [];
         let order={
             location: state.location.name,
-            customer: state.user.sub,
+
             discount:10,
         };
 

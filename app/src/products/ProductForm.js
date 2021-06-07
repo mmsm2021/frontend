@@ -57,14 +57,14 @@ export const ProductForm = () => {
 
                 values.attributes.ingredients = values.ingredients;
                 values.attributes.approach = values.approach;
-                values.status = parseInt(values.status);
                 // Delete temporary object properties
                 delete values.ingredients;
                 delete values.approach;
                 // Generate a unique identifier for the product
                 values.uniqueIdentifier = uuidv4();
+                values.attributes.category = parseInt(values.attributes.category);
                 // Send post request
-                api.post("/products", values)
+                api(state.token).post("/products", values)
                     .then(res => {
                         if (res.status === 200){
                             setSuccess(true);
@@ -85,7 +85,7 @@ export const ProductForm = () => {
                     attributes: {
                         ingredients:[],
                         approach:[],
-                        category:prodCat,
+                        category:0,
                         picture:prodPic
                     },
                     discountPrice: null,
@@ -188,7 +188,7 @@ export const ProductForm = () => {
                                 <Form.Control name={"attributes.category"}
                                               type={"number"}
                                               as={"select"}
-                                              value={values.attributes.category}
+                                              value={Number(values.attributes.category)}
                                               onChange={handleChange}>
                                     {ProductCategories.map((cat) =>(
                                         <option value={cat.id} key={cat.id}>{cat.category}</option>
