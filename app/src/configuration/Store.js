@@ -1,5 +1,6 @@
 import React, {createContext, useReducer} from "react";
 import Reducer from "./Reducer";
+import {getToken} from "./Token";
 
 const initialState ={
     locale: 'da',
@@ -18,7 +19,8 @@ const initialState ={
     theme:'light',
     user:null,
     error:null,
-    didChange: false
+    didChange: false,
+    token: ''
 
 };
 const Store = ({children})=>{

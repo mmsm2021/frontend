@@ -18,7 +18,22 @@ const columns = [
         valueFormatter: (params) => params.value = new Date(params.value).toDateString(),
     },
     { field: 'orderStatus', headerName: 'Status',
-        valueFormatter: (params) => params.value ? 'In progress' : 'Delivered',
+        valueFormatter: (params) => {
+            switch (params.value){
+                case 0:
+                    return <FormattedMessage id={"queue"}/>;
+                    break;
+                case 1:
+                    return <FormattedMessage id={"inProgress"}/>;
+                    break;
+                case 2:
+                    return <FormattedMessage id={"finished"}/>;
+                    break;
+                default:
+                    return <FormattedMessage id={params.value}/>;
+                    break;
+            }
+        },
 
 
     },

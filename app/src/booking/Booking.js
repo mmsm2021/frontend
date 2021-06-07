@@ -3,7 +3,6 @@ import {FormattedMessage} from "react-intl";
 import {Menu, MenuItem, SubMenu} from "react-pro-sidebar";
 import { FaTable} from "react-icons/all";
 import React from "react";
-import {AppDT, CustomDatatable} from "../orders/datatable";
 import {Container} from "react-bootstrap";
 import {DataGrid} from "@material-ui/data-grid";
 

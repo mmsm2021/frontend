@@ -1,3 +1,6 @@
+import {useContext} from "react";
+import {Context} from "./Store";
+
 let token = null;
 let storedToken = localStorage.getItem('token');
 
