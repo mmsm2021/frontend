@@ -14,6 +14,7 @@ import {Autocomplete} from "@material-ui/lab";
 import {TextField} from "@material-ui/core";
 import {DataGrid} from "@material-ui/data-grid";
 import {ProductGrid} from "../orders/UserOrder";
+import {inOneOfRole} from "../Auth";
 
 
 export const ProductRoutes = [
@@ -27,7 +28,11 @@ export const ProductRoutes = [
     {
         path: "/products/new",
         sidebar: <FormattedMessage id={"newProduct"}/>,
-        main: () => <ProductForm/>
+        main: () => <ProductForm/>,
+        roles: [
+            'sa',
+            'admin'
+        ]
     },
     {
         path: "/products/:id",
@@ -36,12 +41,16 @@ export const ProductRoutes = [
 
 ]
 export const ProductMenu = () => {
+    const [state,dispatch] = useContext(Context);
     return (
         <Menu iconShape={"circle"}>
             <SubMenu title={<FormattedMessage id={"products"}/>}
                      icon={<FaList/>}>
                 {ProductRoutes.map((route, index) => {
-                    if (!route.sidebar) return null;
+                    if (!route.sidebar) return;
+                    if (Array.isArray(route.roles) && !inOneOfRole(route.roles, state.user)) {
+                        return;
+                    }
                     return(
                         <MenuItem key={index}>
                             <Link to={route.path}>{route.sidebar}</Link>
