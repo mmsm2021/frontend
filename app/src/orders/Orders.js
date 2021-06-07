@@ -14,6 +14,7 @@ import {Context} from "../configuration/Store";
 import {Form, Col, ListGroup} from "react-bootstrap";
 import {api} from "../services/ApiService";
 import OrderForm from "./OrderForm";
+import {inOneOfRole} from "../Auth";
 
 export const OrderRoutes =
     [
@@ -31,12 +32,22 @@ export const OrderRoutes =
         {
             path: "/orders/queue",
             sidebar: <FormattedMessage id={"queue"}/>,
-            main: (orders) => <Queue orders={orders}/>
+            main: (orders) => <Queue orders={orders}/>,
+            roles: [
+                'sa',
+                'admin',
+                'employee'
+            ]
         },
         {
             path: "/orders/finished",
             sidebar: <FormattedMessage id={"finished"}/>,
-            main: () => <Finished/>
+            main: () => <Finished/>,
+            roles: [
+                'sa',
+                'admin',
+                'employee'
+            ]
         },
         {
             path: "/orders/new",
@@ -49,12 +60,16 @@ export const OrderRoutes =
         }];
 
 export const OrderMenu = () =>{
+    const [state,dispatch] = useContext(Context);
     return (
         <Menu iconShape={"circle"}>
             <SubMenu title={<FormattedMessage id={"orderPlural"}/>}
                      icon={<FaReceipt/>}>
                 {OrderRoutes.map((route, index) => {
-                    if (!route.sidebar) return null;
+                    if (!route.sidebar) return;
+                    if (Array.isArray(route.roles) && !inOneOfRole(route.roles, state.user)) {
+                        return;
+                    }
                     return (
                         <MenuItem key={index} >
                             <Link to={route.path}>{route.sidebar}</Link>

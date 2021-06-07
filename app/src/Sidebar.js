@@ -68,7 +68,7 @@ export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSideba
 
                         <ProductMenu/>
 
-                        <Booking/>
+                        {/*<Booking/>*/}
 
                         <Profile/>
 
