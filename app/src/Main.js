@@ -31,7 +31,6 @@ export const Main =({handleToggleSidebar, toggled}) =>{
     const [state,dispatch] = useContext(Context);
     let routes = [];
     routes = routes.concat(OrderRoutes, ProfileRoutes, ProductRoutes, MainRoutes, BookingRoutes, LocationRoutes);
-    console.log(toggled);
     if (state.error){
         return <Alerter type={'error'} message={state.error.message}/>
     }
