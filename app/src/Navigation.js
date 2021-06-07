@@ -6,7 +6,6 @@ import {NavLink} from "react-router-dom";
 import {Sidebar} from "./Sidebar";
 import {JWTParser} from "./services/JWTParser";
 import {Context} from "./configuration/Store";
-import {setToken} from "./configuration/Token";
 
 
 function UserAvatar(props) {
@@ -49,7 +48,6 @@ const LogoutButton = () => {
     return (
         <Nav.Item>
             <Button variant="danger" size="sm" onClick={() => {
-                setToken(null);
                 logout({returnTo: window.location.origin});
             }} block>
                 Log ud
