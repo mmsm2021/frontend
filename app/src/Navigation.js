@@ -6,6 +6,7 @@ import {NavLink} from "react-router-dom";
 import {Sidebar} from "./Sidebar";
 import {JWTParser} from "./services/JWTParser";
 import {Context} from "./configuration/Store";
+import {setToken} from "./configuration/Token";
 
 
 function UserAvatar(props) {
@@ -23,13 +24,12 @@ export const AuthAction = () => {
     if (!isAuthenticated) {
         return <LoginButton/>
     } else {
-
         if (!state.user) dispatch({type: 'SET_USER', payload: user});
-        getIdTokenClaims()
-            .then(res => {
-                localStorage.setItem("bearer", res.__raw);
-            })
-            .catch(err => console.log(err.message));
+        getIdTokenClaims().then(res => {
+                setToken(res.__raw);
+            }).catch(
+                err => console.log(err.message)
+            );
         return <LogoutButton/>
     }
 };
@@ -44,7 +44,7 @@ const LogoutButton = () => {
     return (
         <Nav.Item>
             <Button variant="danger" size="sm" onClick={() => {
-                localStorage.removeItem('bearer');
+                setToken(null);
                 logout({returnTo: window.location.origin});
             }} block>
                 Log ud

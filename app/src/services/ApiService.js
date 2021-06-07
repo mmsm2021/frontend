@@ -1,23 +1,24 @@
 import axios from "axios";
+import {getToken} from "../configuration/Token";
 export const testToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IllGU0lUT1RpczVmWUsyTlpURUJsciJ9.eyJodHRwczovL2ZyYW5kaW5lLnJhbmRvbXBocC5jb20vcm9sZXMiOlsiU0EiXSwiaHR0cHM6Ly9mcmFuZGluZS5yYW5kb21waHAuY29tL2FwcF9tZXRhZGF0YSI6eyJsb2NhdGlvbnMiOlsiYTJhYTNhZDItOTAwMC00OTJiLWFiNTItNDU4ZDc0NTU4M2UzIl19LCJodHRwczovL2ZyYW5kaW5lLnJhbmRvbXBocC5jb20vdXNlcl9tZXRhZGF0YSI6eyJsb2NhbGUiOiJlbi1HQiIsInRoZW1lIjoiZGVmYXVsdCJ9LCJuaWNrbmFtZSI6InNhIiwibmFtZSI6InNhQGNsdWIuY29tIiwicGljdHVyZSI6Imh0dHBzOi8vcy5ncmF2YXRhci5jb20vYXZhdGFyLzVjY2IyZjZiZjAzZmU3N2RkZWVmZWE4MWNkYmI5ZWIxP3M9NDgwJnI9cGcmZD1odHRwcyUzQSUyRiUyRmNkbi5hdXRoMC5jb20lMkZhdmF0YXJzJTJGc2EucG5nIiwidXBkYXRlZF9hdCI6IjIwMjEtMDYtMDVUMTg6MDE6MDUuMTQ2WiIsImVtYWlsIjoic2FAY2x1Yi5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOi8vbW1zbS5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjBiNzQ0YTA3N2VjMTkwMDY4MzFhZmNmIiwiYXVkIjoiQnhCdnJUZWJ6TllkOGFRVHpJamFLaUk3Vm1ZdE5RcDMiLCJpYXQiOjE2MjI5MTYwNjYsImV4cCI6MTYyMjk1MjA2Niwibm9uY2UiOiJjV2gyVDBST2QyRk5kRmgzYlRkS1dFUnNRVXhuUzNVdVREaDRNM1U1U1ZSMFFtWTVXVTFSU1M1cGNRPT0iLCJvcmdfaWQiOiJvcmdfV2FwYWFpcXh6amw3NVV2ZCJ9.TjvmnmN-oPoHKZRor_EwRdQZqfN1u2zaMdLL40H_EZt4G3-B4ttarjhRWdHeFhGyAVmy_QAEZif6v5SB3yjcbGKAEPN0yql5GgQOrekGDl7l-4Q8iS-P-sL8q2MvRO2m65vElnlutq9OBJSqyVOSrDwos9C_2IQtXOs8yQ3eCFKnOTkQ9-2fdGsJQDnwnjCdyYUNfSbBjOn-1Wv_sUl1GCOitmIWD8SWLgY3Ai94-d-h1ATufdZ6wwkpTdav-Dk0rr-QByVwvXX21Q96-uZ6FlzRfu1HtahrlG67O7b-R0SV1iRt4Ivy_FsxWcEM3KAqDq0SSVrW_4peS63GDU25Rg";
 export const api = axios.create({
     baseURL: 'https://frandine.randomphp.com/api/v1',
     headers:{
-        Authorization: `Bearer ${localStorage.getItem('bearer')}`
+        Authorization: `Bearer ${getToken()}`
         // Authorization: `Bearer ${testToken}`
     }
 });
 export const CoreApi = axios.create({
     baseURL: "https://frandine.randomphp.com/api/v1",
     headers:{
-        Authorization: `Bearer ${localStorage.getItem('bearer')}`
+        Authorization: `Bearer ${getToken()}`
     }
 });
 export const OrderApi = axios.create(
     {
         baseURL: 'https://frandine.randomphp.com/api/v1/orders',
         headers:{
-            Authorization: `Bearer ${localStorage.getItem('bearer')}`
+            Authorization: `Bearer ${getToken()}`
         }
     }
 )

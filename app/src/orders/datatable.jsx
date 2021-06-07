@@ -1,5 +1,6 @@
 import React, {useState, useEffect } from "react";
 import {DataGrid} from "@material-ui/data-grid";
+import {getToken} from "../configuration/Token";
 export function CustomDatatable({data}){
 
     let columns = data[0] && Object.keys(data[0]);
@@ -17,10 +18,9 @@ export function AppDT(){
     const [data, setData] = useState([]);
     const [q, setQ] = useState("");
     useEffect(() =>{
-        let bearer = localStorage.getItem("bearer");
         fetch("https://frandine.randomphp.com/api/v1/orders/23/last/10",{
             headers:{
-                authorization: `Bearer ${bearer}`
+                authorization: `Bearer ${getToken()}`
             }
         })
             .then(response => response.json())
