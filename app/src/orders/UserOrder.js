@@ -56,8 +56,10 @@ export const UserOrder = () =>{
     const [state,dispatch] = useContext(Context);
     const [oId, setOid] = useState('');
     const [success,setSuccess] = useState(false);
+    const [total, setTotal] = useState(0);
     useEffect(async ()=>{
-        await api(state.token).get("/products").then(res => setProducts(res.data))
+        await api(state.token).get(`/products?locationId=${state.location.id}`)
+            .then(res => setProducts(res.data))
             .catch(err => console.log(err));
 
 
@@ -70,6 +72,7 @@ export const UserOrder = () =>{
             .then(res => setCart((prev) =>[...prev,res.data]))
             .catch(err => dispatch({type:'SET_ERROR', payload:err}));
         console.log(cart);
+        setTotal(total + Number(products.find(e => e.id === id).price));
     }
     async function postOrder(){
         let tokens = [];
@@ -92,7 +95,7 @@ export const UserOrder = () =>{
 
 
     }
-    let total = 0;
+
 
     return(
         <Tab.Container id="list-group-tabs" defaultActiveKey="#breakfast" >
@@ -147,7 +150,7 @@ export const UserOrder = () =>{
                                     // let toke = handleAddToCart(cartItem.id);
                                     let item = cartItem;
                                     let info = JWTParser(item.token);
-                                    total = parseInt(total) + parseInt(item.price);
+
                                     console.log(total)
                                     console.log(info)
                                     return(
@@ -165,6 +168,7 @@ export const UserOrder = () =>{
                                                             let current = [...cart];
                                                             current.splice(index,1);
                                                             setCart(current);
+                                                            setTotal( total - Number(info.product.price));
                                                         }}><FaMinus/>
                                                 </Button>
 
