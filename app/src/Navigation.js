@@ -6,6 +6,7 @@ import {NavLink} from "react-router-dom";
 import {Sidebar} from "./Sidebar";
 import {JWTParser} from "./services/JWTParser";
 import {Context} from "./configuration/Store";
+import {FormattedMessage} from "react-intl";
 
 
 function UserAvatar(props) {
@@ -43,9 +44,11 @@ export const AuthAction = () => {
 };
 const LoginButton = () => {
     const {loginWithRedirect} = useAuth0();
-
-    return <Button onClick={() => loginWithRedirect()} block>Login</Button>;
-
+    return (
+        <Button onClick={() => loginWithRedirect()} block>
+                <FormattedMessage id={'login'}/>
+        </Button>
+    );
 }
 const LogoutButton = () => {
     const {logout} = useAuth0();

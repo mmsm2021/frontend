@@ -12,9 +12,10 @@ import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaBars, FaHome} from "react
 import {FormattedMessage} from "react-intl";
 import {Link} from "react-router-dom";
 import {Booking} from "./booking/Booking";
-import {Button, Image} from "react-bootstrap";
+import {Button, Form, Image} from "react-bootstrap";
 import {LocationMenu, LocationSelect} from "./location/Location";
 import {Context} from "./configuration/Store";
+import Switch from "react-bootstrap/Switch";
 
 export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSidebar, bgImage}) => {
     const {user, isAuthenticated, getAccessTokenSilently, getIdTokenClaims} = useAuth0();
@@ -50,7 +51,7 @@ export const Sidebar = ({handleCollapsed, collapsed ,toggled, handleToggleSideba
                     <LocationSelect />
                 <Image src={logo_url} thumbnail />
                     <h4>{state.location.name}</h4>
-
+                    {/*<code><Link to={"/profile"}>Hi, {state.user.name}</Link></code>*/}
                 </div>
             </SidebarHeader>
             <SidebarContent >

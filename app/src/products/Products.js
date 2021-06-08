@@ -3,10 +3,10 @@ import React, {useContext, useEffect, useState} from "react";
 import {Menu,MenuItem, SubMenu} from "react-pro-sidebar";
 import {FaList, FaMinus, FaPlus} from "react-icons/all";
 import {Link} from "react-router-dom";
-import {Accordion, Button, Card, CardDeck, CardGroup, Form, ListGroup, Modal, Row, Tab} from "react-bootstrap";
+import {Accordion, Button, Card, CardDeck, CardGroup, Col, Form, ListGroup, Modal, Row, Tab} from "react-bootstrap";
 import fakeProducts from "./productsJson.json";
 import {ProductForm} from "./ProductForm";
-import {api} from "../services/ApiService";
+import {api, ProductsApi} from "../services/ApiService";
 import ProductCard from "./ProductCard";
 import {Context} from "../configuration/Store";
 import {map} from "react-bootstrap/ElementChildren";
@@ -15,6 +15,7 @@ import {TextField} from "@material-ui/core";
 import {DataGrid} from "@material-ui/data-grid";
 import {ProductGrid} from "../orders/UserOrder";
 import {inOneOfRole} from "../Auth";
+import {ProductDeets} from "./ProductDetail";
 
 
 export const ProductRoutes = [
@@ -36,7 +37,7 @@ export const ProductRoutes = [
     },
     {
         path: "/products/:id",
-        main: () => <ProductForm/>
+        main: () => <ProductDeets/>
     }
 
 ]
@@ -70,7 +71,7 @@ export const ProductsFromState = ({addToCart}) =>{
 
             <Accordion defaultActiveKey={0}>
         {products.map((product,index)=>{
-
+            if (product.locationId != state.location.id) return null;
             return(
                 <Card>
                     <Accordion.Toggle as={Card.Header} eventKey={product.id}>
@@ -169,26 +170,37 @@ export const ProductOverview = () =>{
     const handleDecrement = () =>{
         setQuant(quant - 1);
     }
-    useEffect(()=>{
-        setProducts(state.products);
+    useEffect(async ()=>{
+        // Get location products
+        await api(state.token).get(`/products?locationId=${state.location.id}`)
+            .then(res => {
+                dispatch({type:'SET_PRODUCTS',payload: res.data});
+                setProducts(res.data);
+                console.log(res);
+                dispatch({type:'SET_CHANGED',payload: !state.didChange});
+            })
+            .catch(err => dispatch({type:'SET_ERROR', payload:err}));
 
-    },[state.didChange])
+
+    },[state.location.id]);
+
     return(
         <>
             <h2><FormattedMessage id={"productOverview"}/></h2>
 
                 {ProductCategories.map((cat, index) =>(
-                    <div>
-                        <h1>{cat.category}</h1>
-                        {state.products.map((prod, index) =>{
-                            if (prod.attributes.category === cat.id)
-                                return(
-                                    <ProductGrid key={index}
-                                                 product={prod}
-                                                 />
+                    <div key={index}>
+                        <h4><FormattedMessage id={cat.category.toLowerCase()}/></h4>
+                            {state.products.map((prod, index) =>{
+                                if (prod.attributes.category === cat.id)
+                                    return(
 
-                                )
-                        })}
+                                        <ProductCard key={index}
+                                                     product={prod}
+                                                     />
+
+                                    )
+                            })}
                     </div>
 
                 ) )}

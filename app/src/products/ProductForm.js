@@ -4,9 +4,7 @@ import {Button, Col, Form, InputGroup} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import ProductCard from "./ProductCard";
 import {FaMinus, FaPlus} from "react-icons/all";
-import {Autocomplete} from "@material-ui/lab";
-import {IngredientOptions, ProductCategories} from "./Products";
-import {TextField} from "@material-ui/core";
+import {ProductCategories} from "./Products";
 import {api} from "../services/ApiService";
 import {useContext, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
@@ -36,11 +34,11 @@ export const ProductForm = () => {
     let prodIng = [];
     let prodApp = [];
     let prodCat = 0;
-    let prodPic = "https://picsum.photos/200/100";
+    let prodPic = "https://www.stockvault.net/data/2012/07/27/133058/preview16.jpg";
     useEffect(async()=>{
         if (id){
             setLoading(true);
-            await api.get(`/products/${id}`).
+            await api(state.token).get(`/products/${id}`).
             then(res =>{
                 setProduct(res.data);
             })
@@ -69,6 +67,7 @@ export const ProductForm = () => {
                         if (res.status === 200){
                             setSuccess(true);
                             console.log(res.data)
+                            dispatch({type:'SET_CHANGE', payload: !state.didChange})
                         }else {
                             alert(JSON.stringify(res,null,2));
                         }
@@ -81,7 +80,7 @@ export const ProductForm = () => {
                     name: product.name,
                     locationId: state.location.id,
                     price: product.price,
-                    status: 0,
+                    status: 1,
                     attributes: {
                         ingredients:[],
                         approach:[],
@@ -184,7 +183,7 @@ export const ProductForm = () => {
                         <Form.Row>
                             {/*Category*/}
                             <Form.Group as={Col} md={4}>
-                                <Form.Label>Category</Form.Label>
+                                <Form.Label><FormattedMessage id={"category"}/></Form.Label>
                                 <Form.Control name={"attributes.category"}
                                               type={"number"}
                                               as={"select"}
@@ -199,7 +198,7 @@ export const ProductForm = () => {
                         <Form.Row>
                             {/*Picture*/}
                             <Form.Group as={Col} md={4}>
-                                <Form.Label>Picture</Form.Label>
+                                <Form.Label><FormattedMessage id={'picture'}/></Form.Label>
                                 <Form.Control name={"attributes.picture"}
                                               type={"text"}
                                               value={values.attributes.picture}
@@ -213,7 +212,7 @@ export const ProductForm = () => {
                                             <>
 
                                                 <Form.Group as={Col} className={"col-4"}>
-                                                    <Form.Label className={"d-block"}>Ingredients</Form.Label>
+                                                    <Form.Label className={"d-block"}><FormattedMessage id={"ingredients"}/></Form.Label>
                                                     {values.ingredients && values.ingredients.length > 0 ? (
                                                         values.ingredients.map((ing, index) => (
 
@@ -226,7 +225,7 @@ export const ProductForm = () => {
                                                             </div>
                                                         ))
                                                     ) : (
-                                                        <Form.Text>Add ingredients</Form.Text>
+                                                        <Form.Text><FormattedMessage id={"addIngredients"}/></Form.Text>
                                                     )}
                                                     <Form.Row>
                                                         <FaPlus onClick={() => arrayHelpers.push('')}/>
@@ -246,7 +245,9 @@ export const ProductForm = () => {
                                         render={arrayHelpers => (
                                             <>
                                                 <Form.Group as={Col} className={"col-4"}>
-                                                    <Form.Label className={"d-block align-content-center"}>Instructions</Form.Label>
+                                                    <Form.Label className={"d-block align-content-center"}>
+                                                        <FormattedMessage id={"approach"}/>
+                                                    </Form.Label>
                                                     {values.approach && values.approach.length > 0 ? (
                                                         values.approach.map((roach, index) => (
                                                             <div key={index} className={"d-inline-flex"} style={{padding:2}} >
@@ -261,10 +262,10 @@ export const ProductForm = () => {
                                                         ))
                                                     ) : (
 
-                                                        <Form.Text>Add instructions</Form.Text>
+                                                        <Form.Text><FormattedMessage id={"addApproach"}/></Form.Text>
 
                                                     )}
-                                                    <FaPlus onClick={() => arrayHelpers.push('')} title={"Add"}/>
+                                                    <FaPlus onClick={() => arrayHelpers.push('')} />
                                                 </Form.Group>
                                             </>
                                         )}
@@ -279,7 +280,7 @@ export const ProductForm = () => {
                         {product.id ? (
                             <Button type={"submit"}><FormattedMessage id={'save'}/></Button>
                         ) : (
-                            <Button type={"submit"}><FormattedMessage id={'createProduct'}/></Button>
+                            <Button type={"submit"}><FormattedMessage id={'create'}/></Button>
                         )}
                         <Button type={"reset"} variant={"danger"}>Reset</Button>
                         {success ? <Redirect to={"/products"}/> : ''}

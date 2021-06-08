@@ -1,6 +1,6 @@
-import {FormattedMessage} from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 import {Menu, MenuItem, SubMenu} from "react-pro-sidebar";
-import {Link, useParams} from "react-router-dom";
+import {Link, Redirect, useParams} from "react-router-dom";
 import {FaLocationArrow} from "react-icons/all";
 import {Container} from "@material-ui/core";
 import { Formik, ErrorMessage } from 'formik';
@@ -9,23 +9,41 @@ import React, {useContext, useEffect, useState} from "react";
 import {api, CoreApi} from "../services/ApiService";
 import {Context} from "../configuration/Store";
 import {Alerter} from "../services/AlertService";
+import {inOneOfRole} from "../Auth";
+import LocationForm from "./LocationForm";
+import translations from "../configuration/translations";
 export const LocationRoutes=[
      {
          path: "/location",
          exact: true,
          sidebar: <FormattedMessage id={"location"}/>,
          main: () =><LocationDetail/>
-     }
+     },
+    {
+        path: "/location/new",
+        sidebar: <FormattedMessage id={"createLocation"}/>,
+        roles:[
+            "nope"
+        ],
+        main: () => <LocationForm/>
+    }
  ];
 
 
 export const LocationMenu = () =>{
+    const [state,dispatch] = useContext(Context);
     return(
         <Menu iconShape={"circle"}>
 
-            <MenuItem icon={<FaLocationArrow/>}>
-                {LocationRoutes[0].sidebar}
-                <Link to={LocationRoutes[0].path}/>
+            <MenuItem icon={<FaLocationArrow/>} title={<FormattedMessage id={"location"}/>}>
+                {LocationRoutes.map((route,index) =>{
+                    if (Array.isArray(route.roles) && !inOneOfRole(route.roles, state.user)) {
+                        return;
+                    }
+                    return(
+                            <Link to={route.path}>{route.sidebar}</Link>
+                    )
+                })}
             </MenuItem>
 
         </Menu>
@@ -112,7 +130,7 @@ export const LocationDetail = (props) =>{
 
 
     return(
-        <>
+
             <Formik initialValues={{
                 name: location.name,
                 // point: location.point,
@@ -122,9 +140,9 @@ export const LocationDetail = (props) =>{
                 zipcode: location.zipcode,
                 city: location.city,
                 country: location.country,
-                // logo_url:branding.logo_url,
-                // primary: colors.primary,
-                // page_background: colors.page_background
+                logo_url:branding.logo_url,
+                primary: colors.primary,
+                page_background: colors.page_background
 
 
 
@@ -132,10 +150,20 @@ export const LocationDetail = (props) =>{
             }
                     onSubmit={(values, { setSubmitting }) => {
                                     setTimeout(() => {
-                                    CoreApi.patch(`/locations/${state.location.id}`,values)
-                                        .then(res => console.log(res))
-                                        .catch(err => console.log(err.message));
-                                    setSubmitting(false);
+                                       let answer = window.confirm(state.locale === 'da' ?
+                                                                        'Vil du gemme dine ændringer?'
+                                                                        :'Would you like to save your changes')
+                                        if (answer){
+                                            api(state.token).patch(`/locations/${state.location.id}`,values)
+                                                .then(res => dispatch({type:'SET_LOCATION', payload: res.data}))
+                                                .catch(err => console.log(err.message)).
+                                            finally(() => setSubmitting(false));
+
+                                        }else{
+                                            setSubmitting(false);
+                                        }
+
+
                                 }, 400);
             }}>{({
                                          handleSubmit,
@@ -150,7 +178,7 @@ export const LocationDetail = (props) =>{
                     color: values.metadata.branding.colors.primary
                 }}>
                     <Form.Row >
-                        <h3>Location</h3>
+                        <h3><FormattedMessage id={'location'}/></h3>
                         <InputGroup className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text>ID</InputGroup.Text>
@@ -163,7 +191,7 @@ export const LocationDetail = (props) =>{
                     </Form.Row>
                 <Form.Row>
                     <Form.Group as={Col} md="4" controlId="identity">
-                        <Form.Label>Location name</Form.Label>
+                        <Form.Label><FormattedMessage id={'locationName'}/></Form.Label>
                         <Form.Control
                             type="text"
                             name="name"
@@ -229,23 +257,26 @@ export const LocationDetail = (props) =>{
                                           onChange={handleChange}
                             />
                             <Image src={branding.logo_url} thumbnail/>
-                            <Form.Label>Primary Color</Form.Label>
-                            <Form.Control name={"primary"}
+                            <Form.Label><FormattedMessage id={'primaryColor'}/></Form.Label>
+                            <Form.Control name={"metadata.branding.colors.primary"}
                                           value={values.metadata.branding.colors.primary}
                                           onChange={handleChange}/>
-                            <div style={{height: 50, width:50, backgroundColor:values.metadata.branding.colors.primary}}></div>
-                            <Form.Label>Secondary Color</Form.Label>
+                            <div style={{height: 50, width:50, backgroundColor:primary,margin:5}}></div>
+                            <Form.Label><FormattedMessage id={'backgroundColor'}/> </Form.Label>
                             <Form.Control name={"metadata.branding.colors.page_background"}
                                           value={values.metadata.branding.colors.page_background}
                                           onChange={handleChange}/>
-                            <div style={{height: 50, width:50, backgroundColor:page_background}}></div>
+                            <div style={{height: 50, width:50, backgroundColor:page_background,margin:5}}></div>
                         </Form.Group>
                     </Form.Row>
-                    <Button type={"submit"}>Save</Button>
-                    <Button type={"button"} onClick={() => alert(JSON.stringify(values,null,2))}>Test</Button>
+                    {!state.didChange ? <Redirect to={window.location} /> : ''}
+                    {state.user["https://frandine.randomphp.com/roles"][0] === "SA" ? (
+                        <Button type={"submit"}><FormattedMessage id={'save'}/></Button>
+                    ) : '' }
+
                 </Form>
             )}
             </Formik>
-        </>
+
     )
 }

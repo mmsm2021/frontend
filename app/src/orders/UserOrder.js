@@ -1,6 +1,6 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useAuth0} from "@auth0/auth0-react";
-import {Tab, Row, Col, ListGroup, Button, Card, Table, ButtonGroup} from "react-bootstrap";
+import {Tab, Row, Col, ListGroup, Button, Card, Table, ButtonGroup, Image} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import Badge from '@material-ui/core/Badge';
 import { withStyles } from '@material-ui/core/styles';
@@ -34,6 +34,7 @@ export const CartIcon = ({count}) =>(
 );
 export const ProductGrid = ({key, product, onAdd, count}) =>(
     <Card style={{ width: '28rem', marginBottom: '8px' }} key={key} className={"shadow-lg"}>
+        <Card.Img variant="top" src={product.attributes.picture} />
         <Card.Header>{product.name}</Card.Header>
         <Card.Body>
             {product.description}
@@ -95,15 +96,19 @@ export const UserOrder = () =>{
 
     return(
         <Tab.Container id="list-group-tabs" defaultActiveKey="#breakfast" >
+
             <Row>
                 <Col sm={4} >
-                    <ListGroup className={"shadow-sm "}>
+                    <ListGroup className={"shadow-lg "}>
+                        <ListGroup.Item>
+                            <h4 className={"text-center"}><FormattedMessage id={"newOrder"}/></h4>
+                        </ListGroup.Item>
                         {ProductCategories.map((cat) =>(
                             <ListGroup.Item action href={`#${cat.category}`}>
                                 <FormattedMessage id={`${cat.category.toLowerCase()}`}/>
                             </ListGroup.Item>
                         ))}
-                        <ListGroup.Item action href={"#cart"}>
+                        <ListGroup.Item action href={"#cart"} className={"position-sticky"}>
                             <CartIcon count={cart.length}/>
                         </ListGroup.Item>
                     </ListGroup>
@@ -111,10 +116,10 @@ export const UserOrder = () =>{
 
                 <Col >
 
-                    <Tab.Content>
+                    <Tab.Content >
                         {ProductCategories.map((cat, index) =>(
                             <Tab.Pane eventKey={`#${cat.category}`} >
-                                <h1>{cat.category}</h1>
+                                <h1 ><FormattedMessage id={`${cat.category.toLowerCase()}`}/></h1>
                                 {products.map((prod, index) =>{
                                     if (prod.attributes.category === cat.id)
                                     return(
@@ -123,17 +128,18 @@ export const UserOrder = () =>{
                                                      onAdd={() => addToCart(prod.id)}/>
 
                                     )
+
                                 })}
                             </Tab.Pane>
                         ) )}
 
                         <Tab.Pane eventKey={"#cart"} className={"jumbotron"}>
-                            <h1>Cart</h1>
+                            <h1><FormattedMessage id={'cart'}/></h1>
                             <Table striped bordered hover size="sm" >
                                 <thead>
                                     <tr>
-                                        <th>Item</th>
-                                        <th>Price</th>
+                                        <th><FormattedMessage id={'item'}/></th>
+                                        <th><FormattedMessage id={'price'}/></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -141,7 +147,8 @@ export const UserOrder = () =>{
                                     // let toke = handleAddToCart(cartItem.id);
                                     let item = cartItem;
                                     let info = JWTParser(item.token);
-                                    total = total + parseInt(item.price);
+                                    total = parseInt(total) + parseInt(item.price);
+                                    console.log(total)
                                     console.log(info)
                                     return(
                                         <tr key={index} >
@@ -167,7 +174,7 @@ export const UserOrder = () =>{
                                 </tbody>
                                 <footer>
                                     <span>
-                                        <FormattedMessage id={"Total"}/> {total}
+                                        <FormattedMessage id={"Total"}/> {Number(total)}
                                     </span>
                                 </footer>
                             </Table>

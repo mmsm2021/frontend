@@ -147,7 +147,7 @@ function Settings() {
                         <Form.Group as={Col} controlId="languageSelect">
                             <Form.Label><FormattedMessage id={"language"}/></Form.Label>
                             <Form.Control as="select"
-                                          defaultValue={translations[userMetadata['locale'].substring(0, 2)]['langName']}>
+                                          defaultValue={translations[state.locale.substring(0, 2)]['langName']}>
                                 {
                                     langMenu.map((key) => {
                                             return <option>{translations[key]['langName']}</option>

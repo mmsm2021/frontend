@@ -13,6 +13,9 @@ export const api = (token) =>{
         }
     )
 };
+export const ProductsApi = (id) => axios.create({
+    baseURL: `https://frandine.randomphp.com/api/v1/products?locationId=${id}`
+});
 export const CoreApi = axios.create({
     baseURL: "https://frandine.randomphp.com/api/v1",
     headers:{

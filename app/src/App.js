@@ -37,27 +37,30 @@ function App() {
                     clientId="BxBvrTebzNYd8aQTzIjaKiI7VmYtNQp3"
                     redirectUri={window.location.origin}
                     audience="https://mmsm.eu.auth0.com/api/v2/"
-                    scope="read:current_user update:current_user_metadata read:branding read:organizations read:users">
+                    scope="read:current_user
+                            update:current_user_metadata
+                            read:branding
+                            read:organizations
+                            read:users">
+
+
                     <React.StrictMode>
                         <Router>
+                            {/*Language support*/}
                             <IntlProvider locale={state.locale} messages={translations[state.locale]}>
                                 <GlobalStyles/>
-                                {/*<Navigation/>*/}
-                                {/*<Route path="/" component={App}/>*/}
-
                                 <div className={`shadow-lg app ${toggled ? "toggled" : ''}`}>
+                                {/*Layout*/}
                                 <Sidebar
                                     handleCollapsed={handleCollapsed}
                                     collapsed={collapsed}
                                     handleToggleSidebar={handleToggleSidebar}
                                     toggled={toggled}
                                 />
-
                                 <Main handleToggleSidebar={handleToggleSidebar}
                                       toggled ={toggled} />
 
                                 </div>
-
                             </IntlProvider>
                         </Router>
                     </React.StrictMode>

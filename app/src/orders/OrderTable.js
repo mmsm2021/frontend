@@ -89,6 +89,7 @@ class OrderTable extends React.Component{
         }
     }
 
+
     getOrders(){
         const {which, id} = this.props;
         console.log(which, id)
@@ -121,7 +122,7 @@ class OrderTable extends React.Component{
         if (isLoading) return <Alerter message={"Loading data..."} type={"success"}/>;
         if (error) return <Alerter message={error.message} type={"error"} title={`Code: ${error.code}`}/>;
         return (
-            <div style={{ width: '100%' }}>
+            <div style={{ height:650, width: '100%' }}>
 
                 <div style={{display:'flex',flexGrow:1}}>
                 <DataGrid rows={data.orders}

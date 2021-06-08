@@ -73,7 +73,7 @@ export class OrderDetails extends React.Component{
     }
     getCustomer = async (id) =>{
         if (id === null) return;
-        if (this.state.customer) return;
+        if (this.state.customer) return this.state.customer;
         const encodedId = encodeURIComponent(id);
         await AuthApi.get(`/users/${encodedId}`)
             .then(response => this.setState({customer: response.data}))
@@ -91,8 +91,8 @@ export class OrderDetails extends React.Component{
         // OrderApi.patch(`/${}`)
     }
     handleSelect(event){
-        event.preventDefault();
         alert(JSON.stringify(event.target.value,null,2))
+        event.preventDefault();
     }
     handleDelivered(order){
         let deliveries = {
@@ -127,10 +127,10 @@ export class OrderDetails extends React.Component{
     }
 
     render() {
-        const order = this.state.order.orders;
+        let order = this.state.order.orders;
         const {customer} = this.state;
         if (order){
-
+            this.getCustomer(order.customer);
             let ordered = new Date(order.orderDate).toString();
             const {customer} = this.state;
             return(
@@ -150,7 +150,7 @@ export class OrderDetails extends React.Component{
                             <Form.Label>Order status</Form.Label>
                             <Form.Control as={"select"}
                                           type={"number"}
-                                          value={order.orderStatus}
+                                          value={this.state.order.orders.orderStatus}
                                           name={"orderStatus"}
                                           onChange={this.handleChange}>
                                 <option value={0}>Waiting</option>
@@ -159,7 +159,11 @@ export class OrderDetails extends React.Component{
                             </Form.Control>
                             <Form.Group as={Col} controlId="formGridCustomer">
                                 <Form.Label><FormattedMessage id={"customer"}/></Form.Label>
-                                <Form.Text>{customer.name}</Form.Text>
+                                <Form.Control type={"text"}
+                                              value={order.customer}
+                                              name={"customer"}
+                                              placeholder={order.customer}
+                                              />
                                 <Form.Text><a href={customer.email}>{customer.email}</a></Form.Text>
                             </Form.Group>
 

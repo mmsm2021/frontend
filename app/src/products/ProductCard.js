@@ -17,7 +17,7 @@ export default function ProductCard({product}) {
                 <ListGroupItem>{product.price} DKK</ListGroupItem>
             </ListGroup>
             <Card.Body>
-                <Card.Link><Link to={`/products/${product.id}`}> Details</Link></Card.Link>
+                {/*<Card.Link><Link to={`/products/${product.id}`}> Details</Link></Card.Link>*/}
             </Card.Body>
         </Card>
     );
